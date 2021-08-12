@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[36,)" #mandatory
+loaderVersion="[37,)" #mandatory
 license="GNU GPL v3"
 [[mods]] #mandatory
 modId="mob_statues" #mandatory
@@ -12,12 +12,12 @@ Adds mob statues.
 [[dependencies.mob_statues]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[36,)" #mandatory
+    versionRange="[37,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.mob_statues]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.5,1.17)"
+    versionRange="[1.17.1,1.18)"
     ordering="NONE"
     side="BOTH"

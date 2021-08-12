@@ -14,16 +14,16 @@ public class StatueTileRenderer implements BlockEntityRenderer<StatueBlockEntity
 
     @Override
     public void render(StatueBlockEntity statueBE, float partialTicks, PoseStack stack, MultiBufferSource buffer, int light, int overlay) {
-        if (statueBE.shouldRender() || !statueBE.setup())
+        if (!statueBE.shouldRender() || !statueBE.setup())
             return;
 
         stack.pushPose();
 
-        stack.translate(statueBE.getToCenter().x(), 0, statueBE.getToCenter().y());
+        stack.translate(statueBE.getToCenter().x(), 0, statueBE.getToCenter().z());
         stack.mulPose(Vector3f.YP.rotationDegrees(statueBE.getYRotation()));
 
         try {
-            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(statueBE.getStatue()).render(statueBE.getStatue(), statueBE.getYRotation(), partialTicks, stack, buffer, light);
+            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(statueBE.getStatue()).render(statueBE.getStatue(), 0, partialTicks, stack, buffer, light);
         } catch (Exception e) {
             RenderingExceptionHandler.handle("statue", statueBE.getStatue().getType(), e);
         }

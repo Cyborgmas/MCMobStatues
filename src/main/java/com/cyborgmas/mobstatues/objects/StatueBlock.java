@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -65,7 +67,7 @@ public class StatueBlock extends BaseEntityBlock {
         StatueBlockEntity statue = getStatueTile(world, pos);
         if (statue == null)
             return InteractionResult.PASS;
-        if (world.isClientSide && statue.getStatue() != null)
+        if (world.isClientSide && statue.getStatue() != null && StatueEditingScreen.canEditModel(statue.getStatue()))
                 Minecraft.getInstance().setScreen(new StatueEditingScreen(statue));
         return InteractionResult.SUCCESS;
     }
@@ -97,9 +99,20 @@ public class StatueBlock extends BaseEntityBlock {
         return super.updateShape(thisState, facing, changedState, world, currentPos, changedPos);
     }
 
+    @Override //TODO PR to forge to be able to control the TE NBT that is added
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        return ItemStack.EMPTY;
+    }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(START);
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return state.getValue(START) ? new StatueBlockEntity(pos, state) : new DelegatingBlockEntity(pos, state);
     }
 
     @Override
@@ -115,11 +128,5 @@ public class StatueBlock extends BaseEntityBlock {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
         return this.getShape(reader, pos, false);
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.getValue(START) ? new StatueBlockEntity(pos, state) : new DelegatingBlockEntity(pos, state);
     }
 }
