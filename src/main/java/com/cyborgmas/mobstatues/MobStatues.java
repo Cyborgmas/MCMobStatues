@@ -4,14 +4,14 @@ import com.cyborgmas.mobstatues.client.MobTransformLoader;
 import com.cyborgmas.mobstatues.client.StatueTileRenderer;
 import com.cyborgmas.mobstatues.registration.Registration;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -47,7 +47,7 @@ public class MobStatues {
     public static class ClientHandler {
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
-            event.enqueueWork(() -> ClientRegistry.b(Registration.STATUE_TILE.get(), StatueTileRenderer::new));
+            event.enqueueWork(() -> BlockEntityRenderers.register(Registration.STATUE_BLOCK_ENTITY.get(), StatueTileRenderer::new));
         }
 
         @SubscribeEvent

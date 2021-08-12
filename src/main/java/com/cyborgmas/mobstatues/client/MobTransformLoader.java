@@ -5,25 +5,20 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.model.TransformationHelper;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 @Mod.EventBusSubscriber(modid = MobStatues.MODID, value = Dist.CLIENT)
 public class MobTransformLoader extends SimpleJsonResourceReloadListener {

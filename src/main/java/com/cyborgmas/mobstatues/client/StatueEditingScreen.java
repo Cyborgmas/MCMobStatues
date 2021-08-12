@@ -1,21 +1,21 @@
 package com.cyborgmas.mobstatues.client;
 
 import com.cyborgmas.mobstatues.MobStatues;
-import com.cyborgmas.mobstatues.objects.StatueTileEntity;
+import com.cyborgmas.mobstatues.objects.StatueBlockEntity;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.ListModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Method;
@@ -31,7 +31,7 @@ public class StatueEditingScreen extends Screen {
     private Iterable<ModelPart> head = null;
 
     @SuppressWarnings("unchecked")
-    public StatueEditingScreen(StatueTileEntity statue) {
+    public StatueEditingScreen(StatueBlockEntity statue) {
         super(new TextComponent("Title"));
 
         this.model = statue.getStatue();

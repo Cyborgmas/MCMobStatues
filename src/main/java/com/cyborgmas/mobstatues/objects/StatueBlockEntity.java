@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.*;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.LevelAccessor;
@@ -32,11 +31,11 @@ import net.minecraftforge.common.util.Constants;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class StatueTileEntity extends BlockEntity {
+public class StatueBlockEntity extends BlockEntity {
     private static final String STATUE_PARTS_KEY = "statue_parts_positions";
     private static final String STATUE_DIRECTION_KEY = "statue_direction";
     private static final String STATUE_TO_CENTER_KEY = "statue_to_center";
-    private static final Map<StatueTileEntity, Map<BlockPos, Pair<VoxelShape, VoxelShape>>> SHAPES = new WeakHashMap<>();
+    private static final Map<StatueBlockEntity, Map<BlockPos, Pair<VoxelShape, VoxelShape>>> SHAPES = new WeakHashMap<>();
 
     //Fall backs
     private static final Pair<VoxelShape, VoxelShape> DEFAULT = Pair.of(Shapes.block(), Shapes.block());
@@ -58,8 +57,8 @@ public class StatueTileEntity extends BlockEntity {
 
     private boolean destroying = false;
 
-    public StatueTileEntity(BlockPos pos, BlockState state) {
-        super(Registration.STATUE_TILE.get(), pos, state);
+    public StatueBlockEntity(BlockPos pos, BlockState state) {
+        super(Registration.STATUE_BLOCK_ENTITY.get(), pos, state);
     }
 
     public void setup(CompoundTag entityData, Pair<List<BlockPos>, Boolean> delegates, BlockPos placed, Direction direction) {
@@ -71,6 +70,28 @@ public class StatueTileEntity extends BlockEntity {
 
     public Entity getStatue() {
         return this.statue;
+    }
+
+    public boolean shouldRender() {
+        return !this.entityData.isEmpty() && this.getLevel() != null;
+    }
+
+    public boolean setup() {
+        if (this.statue == null) {
+            this.statue = StatueCreationHelper.getEntity(this.entityData, level,true);
+            if (this.statue == null)
+                return false;
+            this.statue.setYHeadRot(0);
+        }
+        return true;
+    }
+
+    public Vec3 getToCenter() {
+        return this.toCenter;
+    }
+
+    public float getYRotation() {
+        return 90 * ((4 - this.direction.get2DDataValue()) % 4);
     }
 
     private void setEntityData(CompoundTag entityData) {
@@ -144,32 +165,7 @@ public class StatueTileEntity extends BlockEntity {
         return DEFAULT;
     }
 
-    public void renderEntity(PoseStack stack, float partialTicks, MultiBufferSource buffer, int light) {
-        if (this.entityData.isEmpty() || level == null)
-            return;
-
-        if (this.statue == null) {
-            this.statue = StatueCreationHelper.getEntity(this.entityData, level,true);
-            if (this.statue == null)
-                return;
-            this.statue.setYHeadRot(0);
-        }
-
-        stack.pushPose();
-
-        stack.translate(this.toCenter.x(), 0, this.toCenter.y());
-        stack.mulPose(Vector3f.YP.rotationDegrees(90 * ((4 - this.direction.get2DDataValue()) % 4)));
-
-        try {
-            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(statue).render(statue, 0, partialTicks, stack, buffer, light);
-        } catch (Exception e) {
-            RenderingExceptionHandler.handle("statue", this.statue.getType(), e);
-        }
-
-        stack.popPose();
-    }
-
-    private static Map<BlockPos, Pair<VoxelShape, VoxelShape>> computeShapesFor(StatueTileEntity tile, BlockPos start, List<BlockPos> parts) {
+    private static Map<BlockPos, Pair<VoxelShape, VoxelShape>> computeShapesFor(StatueBlockEntity tile, BlockPos start, List<BlockPos> parts) {
         Map<BlockPos, Pair<VoxelShape, VoxelShape>> tileShapes = new HashMap<>();
 
         VoxelShape og = StatueCreationHelper.getShape(tile.entityData, tile.level);
@@ -248,22 +244,6 @@ public class StatueTileEntity extends BlockEntity {
     }
 
     /**
-     * Client write
-     */
-    @Override
-    public CompoundTag getUpdateTag() {
-        return bothSidedWrite(super.getUpdateTag());
-    }
-
-    /**
-     * Client read
-     */
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        this.bothSidedRead(tag);
-    }
-
-    /**
      * Server write
      */
     @Override
@@ -278,5 +258,21 @@ public class StatueTileEntity extends BlockEntity {
     public void load(CompoundTag nbt) {
         super.load(nbt);
         this.bothSidedRead(nbt);
+    }
+
+    /**
+     * Client write
+     */
+    @Override
+    public CompoundTag getUpdateTag() {
+        return bothSidedWrite(super.getUpdateTag());
+    }
+
+    /**
+     * Client read
+     */
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        this.bothSidedRead(tag);
     }
 }

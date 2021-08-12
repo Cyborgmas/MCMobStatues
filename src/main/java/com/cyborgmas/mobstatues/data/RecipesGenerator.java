@@ -3,17 +3,17 @@ package com.cyborgmas.mobstatues.data;
 import com.cyborgmas.mobstatues.registration.Registration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.Util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +61,7 @@ public class RecipesGenerator extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<FinishedRecipe> f) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> f) {
         RECIPE_MAKERS.forEach(rm -> rm.makeRecipe(f));
     }
 

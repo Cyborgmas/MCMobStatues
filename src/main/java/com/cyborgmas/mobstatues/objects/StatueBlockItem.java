@@ -1,34 +1,45 @@
 package com.cyborgmas.mobstatues.objects;
 
 import com.cyborgmas.mobstatues.MobStatues;
+import com.cyborgmas.mobstatues.client.MobTransformLoader;
+import com.cyborgmas.mobstatues.client.StatueTileRenderer;
 import com.cyborgmas.mobstatues.registration.Registration;
+import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 public class StatueBlockItem extends BlockItem {
     public StatueBlockItem(Properties properties) {
@@ -50,6 +61,60 @@ public class StatueBlockItem extends BlockItem {
         TranslatableComponent entityName = entity != null ?
                 new TranslatableComponent(entity.getDescriptionId()) : MobStatues.translate("entity", "unknown");
         tooltip.add(MobStatues.translate("tooltip", "statue", entityName));
+    }
+
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(new IItemRenderProperties() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+                return new BlockEntityWithoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()) {
+                    private final Map<ItemStack, Entity> dynamicModelMap = new WeakHashMap<>();
+                    private final Map<ItemStack, Float> dynamicSizeMap = new WeakHashMap<>();
+
+                    @Override
+                    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int light, int overlay) {
+                        if (!stack.hasTag())
+                            return;
+
+                        Level world = Minecraft.getInstance().level;
+
+                        Entity statue = dynamicModelMap.computeIfAbsent(stack, s ->
+                                StatueCreationHelper.getEntity(s.getOrCreateTag(), world));
+
+                        if (statue == null)
+                            return;
+
+                        float scale = dynamicSizeMap.computeIfAbsent(stack, s -> {
+                            EntityDimensions size = StatueCreationHelper.getEntitySize(s.getOrCreateTag(), world);
+                            if (size == null) {
+                                MobStatues.LOGGER.warn("Failed retrieving entity size with data {}", s.getOrCreateTag());
+                                return 0F;
+                            }
+                            return 1 / Math.max(size.height, size.width);
+                        });
+
+                        if (scale == 0)
+                            return;
+
+                        matrixStack.pushPose();
+
+                        if (scale < 1)
+                            matrixStack.scale(scale, scale, scale);
+
+                        MobTransformLoader.applyEntitySpecificTransform(statue.getType(), transformType, matrixStack);
+
+                        try {
+                            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(statue).render(statue, 0, 0, matrixStack, buffer, light);
+                        } catch (Exception e) {
+                            RenderingExceptionHandler.handle("item in inventory", statue.getType(), e);
+                        }
+
+                        matrixStack.popPose();
+                    }
+                };
+            }
+        });
     }
 
     @Override
@@ -78,16 +143,16 @@ public class StatueBlockItem extends BlockItem {
         boolean ret = world.setBlock(start, state, Constants.BlockFlags.DEFAULT_AND_RERENDER);
 
         BlockEntity te = world.getBlockEntity(context.getClickedPos());
-        if (!(te instanceof StatueTileEntity))
+        if (!(te instanceof StatueBlockEntity))
             return false;
 
-        ((StatueTileEntity) te).setup(nbt, toPlace, start, lookingDir.getOpposite());
+        ((StatueBlockEntity) te).setup(nbt, toPlace, start, lookingDir.getOpposite());
 
         for (BlockPos p : toPlace.getFirst()) {
             if (!world.setBlock(p, state.setValue(StatueBlock.START, false), Constants.BlockFlags.DEFAULT))
                 ret = false;
-            if (world.getBlockEntity(p) instanceof DelegatingTileEntity)
-                ((DelegatingTileEntity) world.getBlockEntity(p)).setDelegate(start);
+            if (world.getBlockEntity(p) instanceof DelegatingBlockEntity)
+                ((DelegatingBlockEntity) world.getBlockEntity(p)).setDelegate(start);
             else
                 ret = false;
         }

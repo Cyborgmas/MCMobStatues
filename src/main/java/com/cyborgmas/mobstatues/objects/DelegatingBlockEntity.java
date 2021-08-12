@@ -1,26 +1,26 @@
 package com.cyborgmas.mobstatues.objects;
 
 import com.cyborgmas.mobstatues.registration.Registration;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
-public class DelegatingTileEntity extends BlockEntity {
+public class DelegatingBlockEntity extends BlockEntity {
     private static final String DELEGATED_POS_KEY = "delegated_tile_pos";
     // No need to render this TE. Empty VoxelShape doesn't have a bounding box.
     private static final AABB RENDER_AABB_CACHE = Shapes.block().bounds();
     private BlockPos delegatedPos = null;
 
-    public DelegatingTileEntity(BlockPos pos, BlockState state) {
-        super(Registration.DELEGATING_TILE.get(), pos, state);
+    public DelegatingBlockEntity(BlockPos pos, BlockState state) {
+        super(Registration.DELEGATING_BLOCK_ENTITY.get(), pos, state);
     }
 
     public void setDelegate(BlockPos delegatedPos) {
@@ -41,6 +41,9 @@ public class DelegatingTileEntity extends BlockEntity {
         return RENDER_AABB_CACHE;
     }
 
+    /**
+     * Server write
+     */
     @Override
     public CompoundTag save(CompoundTag compound) {
         if (delegatedPos != null)
@@ -48,19 +51,28 @@ public class DelegatingTileEntity extends BlockEntity {
         return super.save(compound);
     }
 
+    /**
+     * Server read
+     */
     @Override
-    public void load(BlockState state, CompoundTag nbt) {
+    public void load(CompoundTag nbt) {
         super.load(nbt);
         if (nbt.contains(DELEGATED_POS_KEY, Constants.NBT.TAG_LONG))
             this.delegatedPos = BlockPos.of(nbt.getLong(DELEGATED_POS_KEY));
     }
 
+    /**
+     * Client read
+     */
     @Override
     public void handleUpdateTag(CompoundTag nbt) {
         if (nbt.contains(DELEGATED_POS_KEY, Constants.NBT.TAG_LONG))
             this.delegatedPos = BlockPos.of(nbt.getLong(DELEGATED_POS_KEY));
     }
 
+    /**
+     * Client write
+     */
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag nbt = super.getUpdateTag();

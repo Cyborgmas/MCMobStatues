@@ -4,30 +4,28 @@ import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.client.StatueEditingScreen;
 import com.cyborgmas.mobstatues.registration.Registration;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 @SuppressWarnings({"deprecation", "NullableProblems"})
 public class StatueBlock extends BaseEntityBlock {
@@ -39,13 +37,13 @@ public class StatueBlock extends BaseEntityBlock {
     }
 
     @Nullable
-    public StatueTileEntity getStatueTile(BlockGetter reader, BlockPos pos) {
+    public StatueBlockEntity getStatueTile(BlockGetter reader, BlockPos pos) {
         BlockEntity te = reader.getBlockEntity(pos);
-        StatueTileEntity statue = null;
-        if (te instanceof StatueTileEntity)
-            statue = (StatueTileEntity) te;
-        else if (te instanceof DelegatingTileEntity)
-            statue = ((DelegatingTileEntity) te).getDelegate(Registration.STATUE_TILE.get(), reader);
+        StatueBlockEntity statue = null;
+        if (te instanceof StatueBlockEntity)
+            statue = (StatueBlockEntity) te;
+        else if (te instanceof DelegatingBlockEntity)
+            statue = ((DelegatingBlockEntity) te).getDelegate(Registration.STATUE_BLOCK_ENTITY.get(), reader);
         else
             MobStatues.LOGGER.debug("Tried getting statue at invalid pos {} found {} instead", pos, te);
 
@@ -53,7 +51,7 @@ public class StatueBlock extends BaseEntityBlock {
     }
 
     public VoxelShape getShape(BlockGetter reader, BlockPos pos, boolean rendering) {
-        StatueTileEntity statue = getStatueTile(reader, pos);
+        StatueBlockEntity statue = getStatueTile(reader, pos);
 
         if (statue != null) {
             Pair<VoxelShape, VoxelShape> pair = statue.getBothShapes(pos);
@@ -64,7 +62,7 @@ public class StatueBlock extends BaseEntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        StatueTileEntity statue = getStatueTile(world, pos);
+        StatueBlockEntity statue = getStatueTile(world, pos);
         if (statue == null)
             return InteractionResult.PASS;
         if (world.isClientSide && statue.getStatue() != null)
@@ -79,8 +77,8 @@ public class StatueBlock extends BaseEntityBlock {
     public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
         if (state.getValue(START)) {
             BlockEntity te = worldIn.getBlockEntity(pos);
-            if (te instanceof StatueTileEntity)
-                ((StatueTileEntity) te).destroyStatue(worldIn, pos);
+            if (te instanceof StatueBlockEntity)
+                ((StatueBlockEntity) te).destroyStatue(worldIn, pos);
         }
 
         super.playerWillDestroy(worldIn, pos, state, player);
@@ -91,7 +89,7 @@ public class StatueBlock extends BaseEntityBlock {
      */
     @Override
     public BlockState updateShape(BlockState thisState, Direction facing, BlockState changedState, LevelAccessor world, BlockPos currentPos, BlockPos changedPos) {
-        StatueTileEntity statue = getStatueTile(world, currentPos);
+        StatueBlockEntity statue = getStatueTile(world, currentPos);
 
         if (statue != null)
             statue.checkDestroyStatue(world, changedPos);
@@ -122,6 +120,6 @@ public class StatueBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.getValue(START) ? new StatueTileEntity(pos, state) : new DelegatingTileEntity(pos, state);
+        return state.getValue(START) ? new StatueBlockEntity(pos, state) : new DelegatingBlockEntity(pos, state);
     }
 }

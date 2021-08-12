@@ -8,16 +8,16 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -175,7 +175,7 @@ public class WithNBTShapelessRecipeBuilder {
         }
 
         /**
-         * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
+         * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #serializeAdvancement}
          * is non-null.
          */
         @Nullable

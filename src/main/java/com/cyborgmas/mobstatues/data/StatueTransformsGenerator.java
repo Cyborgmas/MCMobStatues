@@ -2,7 +2,9 @@ package com.cyborgmas.mobstatues.data;
 
 import com.cyborgmas.mobstatues.client.MobTransformLoader;
 import com.google.gson.*;
+import com.mojang.math.Vector3f;
 import cpw.mods.modlauncher.api.LamdbaExceptionUtils;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemTransform;
@@ -12,12 +14,15 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Vector3f;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+import static net.minecraft.client.renderer.block.model.ItemTransform.NO_TRANSFORM;
 import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType.*;
-import static net.minecraft.client.renderer.model.ItemTransformVec3f.NO_TRANSFORM;
 
-public clasnet.minecraft.client.renderer.block.model.ItemTransform
+public class StatueTransformsGenerator implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final DataGenerator generator;
     private final Map<ResourceLocation, ItemTransforms> toSerialize = new HashMap<>();
