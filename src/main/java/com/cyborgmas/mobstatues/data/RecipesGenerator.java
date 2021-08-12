@@ -4,16 +4,16 @@ import com.cyborgmas.mobstatues.registration.Registration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static net.minecraft.entity.EntityType.*;
-import static net.minecraft.item.Items.*;
+import static net.minecraft.world.entity.EntityType.*;
+import static net.minecraft.world.item.Items.*;
 
 public class RecipesGenerator extends RecipeProvider {
     //Only initialised after mods so static init is fine!
@@ -61,7 +61,7 @@ public class RecipesGenerator extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> f) {
+    protected void buildShapelessRecipes(Consumer<FinishedRecipe> f) {
         RECIPE_MAKERS.forEach(rm -> rm.makeRecipe(f));
     }
 
@@ -83,19 +83,19 @@ public class RecipesGenerator extends RecipeProvider {
         return weightedComplex(model, ingredient, nb, s -> {});
     }
 
-    private static RecipeMaker simpleTag(EntityType<?> model, ITag.INamedTag<Item> ingredient) {
+    private static RecipeMaker simpleTag(EntityType<?> model, Tag.Named<Item> ingredient) {
         return complexTag(model, ingredient, s -> {});
     }
 
-    private static RecipeMaker complexTag(EntityType<?> model, ITag.INamedTag<Item> ingredient, Consumer<ItemStack> dataSetter) {
+    private static RecipeMaker complexTag(EntityType<?> model, Tag.Named<Item> ingredient, Consumer<ItemStack> dataSetter) {
         return weightedComplexTag(model, ingredient, 2, dataSetter);
     }
 
-    private static RecipeMaker weightedTag(EntityType<?> model, ITag.INamedTag<Item> ingredient, int nb) {
+    private static RecipeMaker weightedTag(EntityType<?> model, Tag.Named<Item> ingredient, int nb) {
         return weightedComplexTag(model, ingredient, nb, s -> {});
     }
 
-    private static RecipeMaker weightedComplexTag(EntityType<?> model, ITag.INamedTag<Item> ingredient, int nb, Consumer<ItemStack> dataSetter) {
+    private static RecipeMaker weightedComplexTag(EntityType<?> model, Tag.Named<Item> ingredient, int nb, Consumer<ItemStack> dataSetter) {
         return f ->
                 WithNBTShapelessRecipeBuilder.shapelessRecipe(Util.make(putId(model), dataSetter))
                         .addIngredient(Ingredient.of(ingredient), nb)
@@ -129,6 +129,6 @@ public class RecipesGenerator extends RecipeProvider {
 
     @FunctionalInterface
     interface RecipeMaker {
-        void makeRecipe(Consumer<IFinishedRecipe> f);
+        void makeRecipe(Consumer<FinishedRecipe> f);
     }
 }

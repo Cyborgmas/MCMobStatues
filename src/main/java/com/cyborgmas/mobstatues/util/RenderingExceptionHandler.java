@@ -1,7 +1,7 @@
 package com.cyborgmas.mobstatues.util;
 
 import com.cyborgmas.mobstatues.MobStatues;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -3,24 +3,24 @@ package com.cyborgmas.mobstatues.data;
 import com.cyborgmas.mobstatues.client.MobTransformLoader;
 import com.google.gson.*;
 import cpw.mods.modlauncher.api.LamdbaExceptionUtils;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
 
 import java.util.*;
 
-import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.*;
+import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType.*;
 import static net.minecraft.client.renderer.model.ItemTransformVec3f.NO_TRANSFORM;
 
-public class StatueTransformsGenerator implements IDataProvider {
+public clasnet.minecraft.client.renderer.block.model.ItemTransform
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final DataGenerator generator;
-    private final Map<ResourceLocation, ItemCameraTransforms> toSerialize = new HashMap<>();
+    private final Map<ResourceLocation, ItemTransforms> toSerialize = new HashMap<>();
 
     public StatueTransformsGenerator(DataGenerator generator) {
         this.generator = generator;
@@ -31,18 +31,18 @@ public class StatueTransformsGenerator implements IDataProvider {
     }
 
     @Override
-    public void run(DirectoryCache cache) {
+    public void run(HashCache cache) {
         toSerialize.forEach(LamdbaExceptionUtils.rethrowBiConsumer((rl, ict) -> {
             String path = "assets/" + rl.getNamespace() + "/" + MobTransformLoader.FOLDER + "/" + rl.getPath() + ".json" ;
-            IDataProvider.save(GSON, cache , serialize(ict), generator.getOutputFolder().resolve(path));
+            DataProvider.save(GSON, cache , serialize(ict), generator.getOutputFolder().resolve(path));
         }));
     }
 
-    private JsonElement serialize(ItemCameraTransforms transforms) {
+    private JsonElement serialize(ItemTransforms transforms) {
         JsonObject ret = new JsonObject();
         Arrays.stream(values()).forEach(t -> {
             JsonObject tObj = new JsonObject();
-            ItemTransformVec3f vec = transforms.getTransform(t);
+            ItemTransform vec = transforms.getTransform(t);
             if (vec == NO_TRANSFORM)
                 return;
             if (!vec.rotation.equals(NO_TRANSFORM.rotation))
@@ -86,7 +86,7 @@ public class StatueTransformsGenerator implements IDataProvider {
     }
 
     public class TransformsBuilder {
-        private final Map<TransformType, ItemTransformVec3f> transforms = new HashMap<>();
+        private final Map<TransformType, ItemTransform> transforms = new HashMap<>();
         private final ResourceLocation entity;
 
         public TransformsBuilder(ResourceLocation entity) {
@@ -94,7 +94,7 @@ public class StatueTransformsGenerator implements IDataProvider {
         }
 
         private TransformsBuilder add(TransformType type, VecTransformBuilder builder) {
-            transforms.put(type, new ItemTransformVec3f(builder.rotation, builder.translation, builder.scale));
+            transforms.put(type, new ItemTransform(builder.rotation, builder.translation, builder.scale));
             return this;
         }
 
@@ -103,7 +103,7 @@ public class StatueTransformsGenerator implements IDataProvider {
         }
 
         public StatueTransformsGenerator endTransforms() {
-            ItemCameraTransforms transforms = new ItemCameraTransforms(
+            ItemTransforms transforms = new ItemTransforms(
                     this.transforms.getOrDefault(THIRD_PERSON_LEFT_HAND, NO_TRANSFORM),
                     this.transforms.getOrDefault(THIRD_PERSON_RIGHT_HAND, NO_TRANSFORM),
                     this.transforms.getOrDefault(FIRST_PERSON_LEFT_HAND, NO_TRANSFORM),

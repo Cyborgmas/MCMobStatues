@@ -4,42 +4,42 @@ import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.objects.StatueTileEntity;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class StatueTileRenderer extends TileEntityRenderer<StatueTileEntity> {
-    public StatueTileRenderer(TileEntityRendererDispatcher dispatcher) {
+public class StatueTileRenderer extends BlockEntityRenderer<StatueTileEntity> {
+    public StatueTileRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Override
-    public void render(StatueTileEntity statue, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+    public void render(StatueTileEntity statue, float partialTicks, PoseStack stack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         statue.renderEntity(stack, partialTicks, buffer, combinedLight);
     }
 
-    public static ItemStackTileEntityRenderer getStatueItemRenderer() {
-        return new ItemStackTileEntityRenderer() {
+    public static BlockEntityWithoutLevelRenderer getStatueItemRenderer() {
+        return new BlockEntityWithoutLevelRenderer() {
             private final Map<ItemStack, Entity> dynamicModelMap = new WeakHashMap<>();
             private final Map<ItemStack, Float> dynamicSizeMap = new WeakHashMap<>();
 
             @Override
-            public void renderByItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay) {
+            public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int light, int overlay) {
                 if (!stack.hasTag())
                     return;
 
-                World world = Minecraft.getInstance().level;
+                Level world = Minecraft.getInstance().level;
 
                 Entity statue = dynamicModelMap.computeIfAbsent(stack, s ->
                         StatueCreationHelper.getEntity(s.getOrCreateTag(), world));
@@ -48,7 +48,7 @@ public class StatueTileRenderer extends TileEntityRenderer<StatueTileEntity> {
                     return;
 
                 float scale = dynamicSizeMap.computeIfAbsent(stack, s -> {
-                    EntitySize size = StatueCreationHelper.getEntitySize(s.getOrCreateTag(), world);
+                    EntityDimensions size = StatueCreationHelper.getEntitySize(s.getOrCreateTag(), world);
                     if (size == null) {
                         MobStatues.LOGGER.warn("Failed retrieving entity size with data {}", s.getOrCreateTag());
                         return 0F;

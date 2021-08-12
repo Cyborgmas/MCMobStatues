@@ -1,56 +1,55 @@
 package com.cyborgmas.mobstatues.objects;
 
 import com.cyborgmas.mobstatues.MobStatues;
-import com.cyborgmas.mobstatues.client.MobTransformLoader;
 import com.cyborgmas.mobstatues.registration.Registration;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import com.mojang.math.Vector3f;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.*;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class StatueTileEntity extends TileEntity {
+public class StatueTileEntity extends BlockEntity {
     private static final String STATUE_PARTS_KEY = "statue_parts_positions";
     private static final String STATUE_DIRECTION_KEY = "statue_direction";
     private static final String STATUE_TO_CENTER_KEY = "statue_to_center";
     private static final Map<StatueTileEntity, Map<BlockPos, Pair<VoxelShape, VoxelShape>>> SHAPES = new WeakHashMap<>();
 
     //Fall backs
-    private static final Pair<VoxelShape, VoxelShape> DEFAULT = Pair.of(VoxelShapes.block(), VoxelShapes.block());
-    private static final CompoundNBT NBT_PIG = Util.make(() -> {
-       CompoundNBT ret = new CompoundNBT();
+    private static final Pair<VoxelShape, VoxelShape> DEFAULT = Pair.of(Shapes.block(), Shapes.block());
+    private static final CompoundTag NBT_PIG = Util.make(() -> {
+       CompoundTag ret = new CompoundTag();
        ret.putString("id", "pig");
        return ret;
     });
 
     // Serialized fields
-    private CompoundNBT entityData = new CompoundNBT();
+    private CompoundTag entityData = new CompoundTag();
     private List<BlockPos> wholeStatue = null;
-    private Vector3d toCenter = new Vector3d(0.5, 0, 0.5);
+    private Vec3 toCenter = new Vec3(0.5, 0, 0.5);
     private Direction direction = Direction.SOUTH;
 
     // Computed fields.
@@ -59,11 +58,11 @@ public class StatueTileEntity extends TileEntity {
 
     private boolean destroying = false;
 
-    public StatueTileEntity() {
-        super(Registration.STATUE_TILE.get());
+    public StatueTileEntity(BlockPos pos, BlockState state) {
+        super(Registration.STATUE_TILE.get(), pos, state);
     }
 
-    public void setup(CompoundNBT entityData, Pair<List<BlockPos>, Boolean> delegates, BlockPos placed, Direction direction) {
+    public void setup(CompoundTag entityData, Pair<List<BlockPos>, Boolean> delegates, BlockPos placed, Direction direction) {
         setEntityData(entityData);
         this.wholeStatue = ImmutableList.<BlockPos>builder().addAll(delegates.getFirst()).add(placed).build();
         this.direction = direction;
@@ -74,7 +73,7 @@ public class StatueTileEntity extends TileEntity {
         return this.statue;
     }
 
-    private void setEntityData(CompoundNBT entityData) {
+    private void setEntityData(CompoundTag entityData) {
         this.entityData = entityData;
         this.statueType = EntityType.by(entityData).orElse(null);
     }
@@ -84,9 +83,9 @@ public class StatueTileEntity extends TileEntity {
      */
     private void findStatueCenter(List<BlockPos> placements, Boolean toLeft) {
         BlockPos thisPos = this.getBlockPos();
-        Vector3i increment1 = this.direction.getOpposite().getNormal();
-        Vector3i increment2 = toLeft == null ? Vector3i.ZERO : (toLeft ? this.direction.getClockWise() : this.direction.getCounterClockWise()).getNormal();
-        Vector3i increment = new BlockPos(increment1).offset(increment2); // Bcs Vector3i doesn't have #add
+        Vec3i increment1 = this.direction.getOpposite().getNormal();
+        Vec3i increment2 = toLeft == null ? Vec3i.ZERO : (toLeft ? this.direction.getClockWise() : this.direction.getCounterClockWise()).getNormal();
+        Vec3i increment = new BlockPos(increment1).offset(increment2); // Bcs Vector3i doesn't have #add
 
         //Starting position is 0, 0 in the NW corner. adding +0.5 centers it
         double x = 0.5;
@@ -101,10 +100,10 @@ public class StatueTileEntity extends TileEntity {
             }
         }
 
-        this.toCenter = new Vector3d(x, 0, z);
+        this.toCenter = new Vec3(x, 0, z);
     }
 
-    public void checkDestroyStatue(IWorld world, BlockPos changed) {
+    public void checkDestroyStatue(LevelAccessor world, BlockPos changed) {
         if (this.wholeStatue != null &&
                 !this.destroying &&
                 this.wholeStatue.contains(changed) &&
@@ -118,7 +117,7 @@ public class StatueTileEntity extends TileEntity {
         }
     }
 
-    public void destroyStatue(IWorld world, BlockPos ignore) {
+    public void destroyStatue(LevelAccessor world, BlockPos ignore) {
         if (this.wholeStatue != null && !this.destroying) {
             this.destroying = true;
             for (BlockPos pos : this.wholeStatue) {
@@ -145,7 +144,7 @@ public class StatueTileEntity extends TileEntity {
         return DEFAULT;
     }
 
-    public void renderEntity(MatrixStack stack, float partialTicks, IRenderTypeBuffer buffer, int light) {
+    public void renderEntity(PoseStack stack, float partialTicks, MultiBufferSource buffer, int light) {
         if (this.entityData.isEmpty() || level == null)
             return;
 
@@ -181,7 +180,7 @@ public class StatueTileEntity extends TileEntity {
 
         og = og.move(tile.toCenter.x, tile.toCenter.y, tile.toCenter.z);
         // From my understanding, returns the intersection of the 2 shapes.
-        VoxelShape ogCollision = VoxelShapes.join(og, VoxelShapes.block(), IBooleanFunction.AND);
+        VoxelShape ogCollision = Shapes.join(og, Shapes.block(), BooleanOp.AND);
 
         tileShapes.put(start, Pair.of(og, ogCollision));
 
@@ -194,8 +193,8 @@ public class StatueTileEntity extends TileEntity {
                 // Not sure if I could improve this creation. Gives each block the appropriate collision box for where
                 // they are, instead of giving them the full rendering shape but offset. This is so that in a X piece
                 // statue there aren't X collision boxes for the single statue.
-                VoxelShape offsetCube = VoxelShapes.block().move(-x, -y, -z);
-                VoxelShape collision = VoxelShapes.join(og, offsetCube, IBooleanFunction.AND).move(x, y, z);
+                VoxelShape offsetCube = Shapes.block().move(-x, -y, -z);
+                VoxelShape collision = Shapes.join(og, offsetCube, BooleanOp.AND).move(x, y, z);
 
                 tileShapes.put(pos, Pair.of(rendering, collision));
             }
@@ -203,35 +202,35 @@ public class StatueTileEntity extends TileEntity {
         return tileShapes;
     }
 
-    private CompoundNBT bothSidedWrite(CompoundNBT nbt) {
+    private CompoundTag bothSidedWrite(CompoundTag nbt) {
         if (this.wholeStatue != null) {
-            nbt.put(STATUE_PARTS_KEY, new LongArrayNBT(
+            nbt.put(STATUE_PARTS_KEY, new LongArrayTag(
                     this.wholeStatue.stream().map(BlockPos::asLong).collect(Collectors.toList())
             ));
         }
 
         nbt.put(MobStatues.MOB_STATUE_KEY, this.entityData);
 
-        ListNBT list = new ListNBT();
-        list.add(DoubleNBT.valueOf(this.toCenter.x));
-        list.add(DoubleNBT.valueOf(this.toCenter.y));
-        list.add(DoubleNBT.valueOf(this.toCenter.z));
+        ListTag list = new ListTag();
+        list.add(DoubleTag.valueOf(this.toCenter.x));
+        list.add(DoubleTag.valueOf(this.toCenter.y));
+        list.add(DoubleTag.valueOf(this.toCenter.z));
 
         nbt.put(STATUE_TO_CENTER_KEY, list);
 
-        nbt.put(STATUE_DIRECTION_KEY, IntNBT.valueOf(this.direction.get2DDataValue()));
+        nbt.put(STATUE_DIRECTION_KEY, IntTag.valueOf(this.direction.get2DDataValue()));
 
         return nbt;
     }
 
-    private void bothSidedRead(CompoundNBT nbt) {
+    private void bothSidedRead(CompoundTag nbt) {
         setEntityData(nbt.contains(MobStatues.MOB_STATUE_KEY, Constants.NBT.TAG_COMPOUND) ?
-                nbt.getCompound(MobStatues.MOB_STATUE_KEY) : new CompoundNBT());
+                nbt.getCompound(MobStatues.MOB_STATUE_KEY) : new CompoundTag());
 
         if (nbt.contains(STATUE_TO_CENTER_KEY, Constants.NBT.TAG_LIST)) {
-            ListNBT list = nbt.getList(STATUE_TO_CENTER_KEY, Constants.NBT.TAG_DOUBLE);
+            ListTag list = nbt.getList(STATUE_TO_CENTER_KEY, Constants.NBT.TAG_DOUBLE);
             if (list.size() == 3)
-                this.toCenter = new Vector3d(list.getDouble(0), list.getDouble(1), list.getDouble(2));
+                this.toCenter = new Vec3(list.getDouble(0), list.getDouble(1), list.getDouble(2));
         }
 
         if (nbt.contains(STATUE_DIRECTION_KEY, Constants.NBT.TAG_INT))
@@ -244,7 +243,7 @@ public class StatueTileEntity extends TileEntity {
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         return getBothShapes(this.worldPosition).getFirst().bounds().move(this.worldPosition);
     }
 
@@ -252,7 +251,7 @@ public class StatueTileEntity extends TileEntity {
      * Client write
      */
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         return bothSidedWrite(super.getUpdateTag());
     }
 
@@ -260,7 +259,7 @@ public class StatueTileEntity extends TileEntity {
      * Client read
      */
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+    public void handleUpdateTag(CompoundTag tag) {
         this.bothSidedRead(tag);
     }
 
@@ -268,7 +267,7 @@ public class StatueTileEntity extends TileEntity {
      * Server write
      */
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundTag save(CompoundTag nbt) {
         return this.bothSidedWrite(super.save(nbt));
     }
 
@@ -276,8 +275,8 @@ public class StatueTileEntity extends TileEntity {
      * Server read
      */
     @Override
-    public void load(BlockState state, CompoundNBT nbt) {
-        super.load(state, nbt);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
         this.bothSidedRead(nbt);
     }
 }

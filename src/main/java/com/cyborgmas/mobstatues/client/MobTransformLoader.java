@@ -4,14 +4,14 @@ import com.cyborgmas.mobstatues.MobStatues;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.entity.EntityType;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.model.TransformationHelper;
@@ -26,13 +26,13 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 @Mod.EventBusSubscriber(modid = MobStatues.MODID, value = Dist.CLIENT)
-public class MobTransformLoader extends JsonReloadListener {
+public class MobTransformLoader extends SimpleJsonResourceReloadListener {
     public final static String FOLDER = "statue_transforms";
-    private final static Gson GSON = new GsonBuilder().registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer()).registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer()).setPrettyPrinting().create();
+    private final static Gson GSON = new GsonBuilder().registerTypeAdapter(ItemTransforms.class, new ItemTransforms.Deserializer()).registerTypeAdapter(ItemTransform.class, new ItemTransform.Deserializer()).setPrettyPrinting().create();
 
     public static MobTransformLoader instance;
 
-    private final Map<ResourceLocation, ItemCameraTransforms> statueTransforms = new HashMap<>();
+    private final Map<ResourceLocation, ItemTransforms> statueTransforms = new HashMap<>();
 
     public MobTransformLoader() {
         super(GSON, FOLDER);
@@ -40,18 +40,18 @@ public class MobTransformLoader extends JsonReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> jsonMap, IResourceManager resourceManager, IProfiler profiler) {
+    protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager resourceManager, ProfilerFiller profiler) {
         statueTransforms.clear();
 
         jsonMap.entrySet().stream()
                 .filter(e -> ForgeRegistries.ENTITIES.containsKey(e.getKey()))
-                .forEach(e -> statueTransforms.put(e.getKey(), GSON.fromJson(e.getValue(), ItemCameraTransforms.class)));
+                .forEach(e -> statueTransforms.put(e.getKey(), GSON.fromJson(e.getValue(), ItemTransforms.class)));
     }
 
-    public static void applyEntitySpecificTransform(EntityType<?> entity, ItemCameraTransforms.TransformType type, MatrixStack stack) {
+    public static void applyEntitySpecificTransform(EntityType<?> entity, ItemTransforms.TransformType type, PoseStack stack) {
         if (instance.statueTransforms.containsKey(entity.getRegistryName())) {
-            ItemCameraTransforms transforms = instance.statueTransforms.get(entity.getRegistryName());
-            if (!transforms.getTransform(type).equals(ItemTransformVec3f.NO_TRANSFORM)) {
+            ItemTransforms transforms = instance.statueTransforms.get(entity.getRegistryName());
+            if (!transforms.getTransform(type).equals(ItemTransform.NO_TRANSFORM)) {
                 TransformationHelper.toTransformation(transforms.getTransform(type)).push(stack);
             }
         }
