@@ -1,8 +1,6 @@
 package com.cyborgmas.mobstatues.objects;
 
 import com.cyborgmas.mobstatues.MobStatues;
-import com.cyborgmas.mobstatues.client.MobTransformLoader;
-import com.cyborgmas.mobstatues.client.StatueTileRenderer;
 import com.cyborgmas.mobstatues.registration.Registration;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;
@@ -101,8 +99,6 @@ public class StatueBlockItem extends BlockItem {
 
                         if (scale < 1)
                             matrixStack.scale(scale, scale, scale);
-
-                        MobTransformLoader.applyEntitySpecificTransform(statue.getType(), transformType, matrixStack);
 
                         try {
                             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(statue).render(statue, 0, 0, matrixStack, buffer, light);

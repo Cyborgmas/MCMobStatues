@@ -2,15 +2,10 @@ package com.cyborgmas.mobstatues.objects;
 
 import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.registration.Registration;
-import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Vector3f;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;

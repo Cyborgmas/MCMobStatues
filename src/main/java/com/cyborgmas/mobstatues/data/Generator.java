@@ -14,12 +14,5 @@ public class Generator {
         generator.addProvider(new LangGen(generator));
         generator.addProvider(new AllModelsGenerator(event));
         generator.addProvider(new RecipesGenerator(event.getGenerator()));
-
-//        generator.addProvider(new StatueTransformsGenerator(event.getGenerator())
-//                .makeTransformsFor(new ResourceLocation("pig"))
-//                .transform()
-//                .addTranslation(3)
-//                .end(ItemCameraTransforms.TransformType.GUI)
-//                .endTransforms());
     }
 }
