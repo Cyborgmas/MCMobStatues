@@ -1,7 +1,9 @@
 package com.cyborgmas.mobstatues;
 
+import com.cyborgmas.mobstatues.client.SculptorWorkspaceScreen;
 import com.cyborgmas.mobstatues.client.StatueTileRenderer;
 import com.cyborgmas.mobstatues.registration.Registration;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -41,7 +43,10 @@ public class MobStatues {
     public static class ClientHandler {
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
-            event.enqueueWork(() -> BlockEntityRenderers.register(Registration.STATUE_BLOCK_ENTITY.get(), StatueTileRenderer::new));
+            event.enqueueWork(() ->  {
+                BlockEntityRenderers.register(Registration.STATUE_BLOCK_ENTITY.get(), StatueTileRenderer::new);
+                MenuScreens.register(Registration.SCULPTOR_WORKSPACE_MENU_TYPE.get(), SculptorWorkspaceScreen::new);
+            });
         }
     }
 }

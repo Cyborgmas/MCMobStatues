@@ -8,6 +8,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
+import static com.cyborgmas.mobstatues.registration.Registration.*;
 import static net.minecraftforge.client.model.generators.ModelBuilder.Perspective.*;
 
 public class AllModelsGenerator extends BlockStateProvider {
@@ -35,7 +36,7 @@ public class AllModelsGenerator extends BlockStateProvider {
                 .end();
 
         ModelFile statue = models().getBuilder("statue_block").texture("particle", mcLoc("block/stone"));
-        getVariantBuilder(Registration.STATUE_BLOCK.get())
+        getVariantBuilder(STATUE_BLOCK.get())
                 .forAllStates(state ->
                         ConfiguredModel.builder().modelFile(statue).build()
                 );
