@@ -1,6 +1,7 @@
-package com.cyborgmas.mobstatues.objects;
+package com.cyborgmas.mobstatues.objects.statue;
 
 import com.cyborgmas.mobstatues.MobStatues;
+import com.cyborgmas.mobstatues.objects.DelegatingBlockEntity;
 import com.cyborgmas.mobstatues.registration.Registration;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;

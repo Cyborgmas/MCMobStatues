@@ -14,5 +14,6 @@ public class Generator {
         generator.addProvider(new LangGen(generator));
         generator.addProvider(new AllModelsGenerator(event));
         generator.addProvider(new RecipesGenerator(event.getGenerator()));
+        generator.addProvider(new SculptingRecipeGenerator(event.getGenerator()));
     }
 }

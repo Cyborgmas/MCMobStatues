@@ -7,11 +7,13 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +27,11 @@ public class MobStatues {
     public MobStatues() {
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
         Registration.registerAll(modbus);
+        modbus.addListener(this::commonSetup);
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> RecipeType.register(getId("sculpting").toString()));
     }
 
     public static ResourceLocation getId(String name) {

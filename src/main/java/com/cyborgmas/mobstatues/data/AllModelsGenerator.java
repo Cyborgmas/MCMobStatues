@@ -1,14 +1,16 @@
 package com.cyborgmas.mobstatues.data;
 
 import com.cyborgmas.mobstatues.MobStatues;
-import com.cyborgmas.mobstatues.registration.Registration;
+import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceBlock;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
-import static com.cyborgmas.mobstatues.registration.Registration.*;
+import static com.cyborgmas.mobstatues.registration.Registration.SCULPTOR_WORKSPACE_BLOCK;
+import static com.cyborgmas.mobstatues.registration.Registration.STATUE_BLOCK;
 import static net.minecraftforge.client.model.generators.ModelBuilder.Perspective.*;
 
 public class AllModelsGenerator extends BlockStateProvider {
@@ -40,5 +42,14 @@ public class AllModelsGenerator extends BlockStateProvider {
                 .forAllStates(state ->
                         ConfiguredModel.builder().modelFile(statue).build()
                 );
+
+        horizontalBlock(SCULPTOR_WORKSPACE_BLOCK.get(), state -> {
+                    boolean lower = state.getValue(SculptorWorkspaceBlock.HALF) == DoubleBlockHalf.LOWER;
+                    return models().getExistingFile(
+                            MobStatues.getId(
+                                    "sculptor_workspace_" + (lower ? "bottom" : "top")
+                            )
+                    );
+        });
     }
 }

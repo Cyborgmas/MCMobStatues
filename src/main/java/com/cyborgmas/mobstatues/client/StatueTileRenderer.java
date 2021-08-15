@@ -1,6 +1,6 @@
 package com.cyborgmas.mobstatues.client;
 
-import com.cyborgmas.mobstatues.objects.StatueBlockEntity;
+import com.cyborgmas.mobstatues.objects.statue.StatueBlockEntity;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;

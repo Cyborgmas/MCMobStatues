@@ -1,4 +1,4 @@
-package com.cyborgmas.mobstatues.objects;
+package com.cyborgmas.mobstatues.objects.statue;
 
 import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.registration.Registration;

@@ -1,14 +1,18 @@
 package com.cyborgmas.mobstatues.registration;
 
 import com.cyborgmas.mobstatues.objects.DelegatingBlockEntity;
-import com.cyborgmas.mobstatues.objects.StatueBlock;
-import com.cyborgmas.mobstatues.objects.StatueBlockEntity;
-import com.cyborgmas.mobstatues.objects.StatueBlockItem;
+import com.cyborgmas.mobstatues.objects.statue.StatueBlock;
+import com.cyborgmas.mobstatues.objects.statue.StatueBlockEntity;
+import com.cyborgmas.mobstatues.objects.statue.StatueBlockItem;
+import com.cyborgmas.mobstatues.objects.sculptor.SculptingRecipe;
+import com.cyborgmas.mobstatues.objects.sculptor.SculptingRecipeSerializer;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceBlock;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -26,6 +30,15 @@ public class Registration {
     public static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    public static DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+
+    public static void registerAll(IEventBus bus) {
+        BLOCKS.register(bus);
+        ITEMS.register(bus);
+        BLOCK_ENTITIES.register(bus);
+        MENUS.register(bus);
+        RECIPE_SERIALIZERS.register(bus);
+    }
 
     public static RegistryObject<Block> STATUE_BLOCK = BLOCKS.register("statue_block", () ->
             new StatueBlock(
@@ -50,6 +63,9 @@ public class Registration {
             )
     );
 
+    public static RegistryObject<Item> SCULPTOR_WORKSPACE_ITEM = ITEMS.register("sculptor_workspace", () ->
+            new BlockItem(SCULPTOR_WORKSPACE_BLOCK.get(), new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_DECORATIONS)));
+
     public static RegistryObject<BlockEntityType<StatueBlockEntity>> STATUE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("statue", () -> BlockEntityType.Builder.of(StatueBlockEntity::new, STATUE_BLOCK.get()).build(null));
     public static RegistryObject<BlockEntityType<DelegatingBlockEntity>> DELEGATING_BLOCK_ENTITY =
@@ -58,10 +74,6 @@ public class Registration {
     public static RegistryObject<MenuType<SculptorWorkspaceMenu>> SCULPTOR_WORKSPACE_MENU_TYPE =
             MENUS.register("sculptor_workspace_menu", () -> IForgeContainerType.create(SculptorWorkspaceMenu::new));
 
-    public static void registerAll(IEventBus bus) {
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
-        BLOCK_ENTITIES.register(bus);
-        MENUS.register(bus);
-    }
+    public static RegistryObject<RecipeSerializer<SculptingRecipe>> SCULPTING_RECIPE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("sculpting_recipe", SculptingRecipeSerializer::new);
 }

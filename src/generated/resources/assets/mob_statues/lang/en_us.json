@@ -1,5 +1,7 @@
 {
+  "block.mob_statues.sculptor_workspace_block": "Sculptor Workspace",
   "block.mob_statues.statue_block": "Statue",
+  "container.mob_statues.sculptor_workspace": "Sculptor Workspace",
   "entity.mob_statues.unknown": "Unknown",
   "tooltip.mob_statues.statue": "%s statue"
 }

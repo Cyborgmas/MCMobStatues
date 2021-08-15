@@ -1,0 +1,38 @@
+{
+    "__comment": "sculptorworkspace - cyborgmas, created using Tabula 8.0.0",
+    "parent": "minecraft:block/block",
+    "ambientocclusion": false,
+    "textures": {
+        "all": "mob_statues:block/sculptor_workspace"
+    },
+    "elements": [
+        {
+            "__comment": "top",
+            "from": [ 0, 10, 0 ],
+            "to": [ 8, 16, 8 ],
+            "shade": true,
+            "faces": {
+                "down":  { "uv": [ 6.0, 6.0, 4.0, 8.0 ], "texture": "#all" },
+                "up":  { "uv": [ 4.0, 8.0, 2.0, 6.0 ], "texture": "#all" },
+                "north":  { "uv": [ 2.0, 8.0, 4.0, 9.5 ], "texture": "#all" },
+                "south":  { "uv": [ 6.0, 8.0, 8.0, 9.5 ], "texture": "#all" },
+                "west":  { "uv": [ 4.0, 8.0, 6.0, 9.5 ], "texture": "#all" },
+                "east":  { "uv": [ 0.0, 8.0, 2.0, 9.5 ], "texture": "#all" }
+            }
+        },
+        {
+            "__comment": "bottom",
+            "from": [ 0, 0, 0 ],
+            "to": [ 16, 10, 16 ],
+            "shade": true,
+            "faces": {
+                "down":  { "uv": [ 12.0, 9.5, 8.0, 13.5 ], "texture": "#all" },
+                "up":  { "uv": [ 8.0, 13.5, 4.0, 9.5 ], "texture": "#all" },
+                "north":  { "uv": [ 4.0, 13.5, 8.0, 16.0 ], "texture": "#all" },
+                "south":  { "uv": [ 12.0, 13.5, 16.0, 16.0 ], "texture": "#all" },
+                "west":  { "uv": [ 8.0, 13.5, 12.0, 16.0 ], "texture": "#all" },
+                "east":  { "uv": [ 0.0, 13.5, 4.0, 16.0 ], "texture": "#all" }
+            }
+        }
+    ]
+}

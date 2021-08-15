@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top"
+    },
+    "facing=south,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top",
+      "y": 180
+    },
+    "facing=west,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top",
+      "y": 270
+    },
+    "facing=east,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top",
+      "y": 90
+    },
+    "facing=north,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom"
+    },
+    "facing=south,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom",
+      "y": 180
+    },
+    "facing=west,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom",
+      "y": 270
+    },
+    "facing=east,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom",
+      "y": 90
+    }
+  }
+}

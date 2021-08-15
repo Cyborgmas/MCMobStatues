@@ -67,12 +67,11 @@ public class StatueCreationHelper {
 
     private static Either<EntityType<?>, Entity> getEntityOrType(CompoundTag nbt, Level world) {
         EntityType<? extends Entity> type = EntityType.by(nbt).orElse(EntityType.PIG);
+        if (!DYNAMIC_SIZED_ENTITIES.contains(type)) //TODO proper data-driven check?
+            return Either.left(type);
 
         Entity e = createEntityAndRead(type, nbt, world);
-        if (e == null)
-            return Either.left(EntityType.PIG);
-
-        return DYNAMIC_SIZED_ENTITIES.contains(type) ? Either.right(e) : Either.left(type);
+        return e == null ? Either.left(EntityType.PIG) : Either.right(e);
     }
 
     private static Entity createEntityAndRead(EntityType<?> type, CompoundTag nbt, Level world) {
