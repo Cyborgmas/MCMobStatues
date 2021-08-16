@@ -1,5 +1,6 @@
 package com.cyborgmas.mobstatues.registration;
 
+import com.cyborgmas.mobstatues.client.ItemRenderProperties;
 import com.cyborgmas.mobstatues.objects.DelegatingBlockEntity;
 import com.cyborgmas.mobstatues.objects.statue.StatueBlock;
 import com.cyborgmas.mobstatues.objects.statue.StatueBlockEntity;
@@ -17,11 +18,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fmllegacy.DatagenModLoader;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Consumer;
 
 import static com.cyborgmas.mobstatues.MobStatues.MODID;
 
@@ -64,7 +69,13 @@ public class Registration {
     );
 
     public static RegistryObject<Item> SCULPTOR_WORKSPACE_ITEM = ITEMS.register("sculptor_workspace", () ->
-            new BlockItem(SCULPTOR_WORKSPACE_BLOCK.get(), new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_DECORATIONS)));
+            new BlockItem(SCULPTOR_WORKSPACE_BLOCK.get(), new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_DECORATIONS)) {
+                @Override
+                public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+                    if (!DatagenModLoader.isRunningDataGen()) //crashes in datagen
+                        consumer.accept(ItemRenderProperties.getSculptorWorkspaceBlockItemRenderer());
+                }
+            });
 
     public static RegistryObject<BlockEntityType<StatueBlockEntity>> STATUE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("statue", () -> BlockEntityType.Builder.of(StatueBlockEntity::new, STATUE_BLOCK.get()).build(null));

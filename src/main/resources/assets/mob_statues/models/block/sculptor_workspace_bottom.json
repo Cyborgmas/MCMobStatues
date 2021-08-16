@@ -3,13 +3,14 @@
     "parent": "minecraft:block/block",
     "ambientocclusion": false,
     "textures": {
-        "all": "mob_statues:block/sculptor_workspace"
+        "all": "mob_statues:block/sculptor_workspace",
+        "particle" : "minecraft:block/dark_oak_log"
     },
     "elements": [
         {
             "__comment": "top",
-            "from": [ 0, 10, 0 ],
-            "to": [ 8, 16, 8 ],
+            "from": [ 8, 10, 8 ],
+            "to": [ 16, 16, 16 ],
             "shade": true,
             "faces": {
                 "down":  { "uv": [ 6.0, 6.0, 4.0, 8.0 ], "texture": "#all" },

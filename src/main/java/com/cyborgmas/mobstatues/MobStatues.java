@@ -18,11 +18,14 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Random;
+
 @Mod(MobStatues.MODID)
 public class MobStatues {
     public static final String MODID = "mob_statues";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOB_STATUE_KEY = "mob_statue_data";
+    public static final Random RANDOM = new Random();
 
     public MobStatues() {
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
