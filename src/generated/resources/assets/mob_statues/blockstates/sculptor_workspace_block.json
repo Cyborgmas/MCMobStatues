@@ -1,32 +1,62 @@
 {
   "variants": {
-    "facing=north,half=upper": {
+    "coffee=false,facing=north,half=upper": {
       "model": "mob_statues:block/sculptor_workspace_top"
     },
-    "facing=south,half=upper": {
+    "coffee=true,facing=north,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top"
+    },
+    "coffee=false,facing=south,half=upper": {
       "model": "mob_statues:block/sculptor_workspace_top",
       "y": 180
     },
-    "facing=west,half=upper": {
+    "coffee=true,facing=south,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top",
+      "y": 180
+    },
+    "coffee=false,facing=west,half=upper": {
       "model": "mob_statues:block/sculptor_workspace_top",
       "y": 270
     },
-    "facing=east,half=upper": {
+    "coffee=true,facing=west,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top",
+      "y": 270
+    },
+    "coffee=false,facing=east,half=upper": {
       "model": "mob_statues:block/sculptor_workspace_top",
       "y": 90
     },
-    "facing=north,half=lower": {
+    "coffee=true,facing=east,half=upper": {
+      "model": "mob_statues:block/sculptor_workspace_top",
+      "y": 90
+    },
+    "coffee=false,facing=north,half=lower": {
       "model": "mob_statues:block/sculptor_workspace_bottom"
     },
-    "facing=south,half=lower": {
+    "coffee=true,facing=north,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom"
+    },
+    "coffee=false,facing=south,half=lower": {
       "model": "mob_statues:block/sculptor_workspace_bottom",
       "y": 180
     },
-    "facing=west,half=lower": {
+    "coffee=true,facing=south,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom",
+      "y": 180
+    },
+    "coffee=false,facing=west,half=lower": {
       "model": "mob_statues:block/sculptor_workspace_bottom",
       "y": 270
     },
-    "facing=east,half=lower": {
+    "coffee=true,facing=west,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom",
+      "y": 270
+    },
+    "coffee=false,facing=east,half=lower": {
+      "model": "mob_statues:block/sculptor_workspace_bottom",
+      "y": 90
+    },
+    "coffee=true,facing=east,half=lower": {
       "model": "mob_statues:block/sculptor_workspace_bottom",
       "y": 90
     }
