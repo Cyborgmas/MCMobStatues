@@ -43,11 +43,9 @@ public class AllModelsGenerator extends BlockStateProvider {
                         ConfiguredModel.builder().modelFile(statue).build()
                 );
 
-        ModelFile coffeeCup = models().getExistingFile(MobStatues.getId("coffee_cup"));
-
         horizontalBlock(SCULPTOR_WORKSPACE_BLOCK.get(), state -> {
                     boolean lower = state.getValue(SculptorWorkspaceBlock.HALF) == DoubleBlockHalf.LOWER;
-                    ModelFile halfModel = models().getExistingFile(
+                    return models().getExistingFile(
                             MobStatues.getId(
                                     "sculptor_workspace_" + (lower ? "bottom" : "top")
                             )
@@ -56,8 +54,5 @@ public class AllModelsGenerator extends BlockStateProvider {
 
         this.itemModels().getBuilder("sculptor_workspace")
                 .parent(new UncheckedModelFile("builtin/entity"));
-
-
-
     }
 }

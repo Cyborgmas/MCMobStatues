@@ -43,7 +43,6 @@ import static net.minecraftforge.common.util.Constants.WorldEvents;
 public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
     public static final Component CONTAINER_TITLE = MobStatues.translate("container", "sculptor_workspace");
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
-    public static final BooleanProperty COFFEE = BooleanProperty.create("coffee");
     public static final VoxelShape TOP_NORTH_AABB = Block.box(8, 0, 8, 16, 16, 16);
     public static final VoxelShape TOP_SOUTH_AABB = Block.box(0, 0, 0, 8, 16, 8);
     public static final VoxelShape TOP_EAST_AABB = Block.box(0, 0, 8, 8, 16, 16);
@@ -59,7 +58,6 @@ public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(HALF, DoubleBlockHalf.LOWER)
                 .setValue(FACING, Direction.NORTH)
-                .setValue(COFFEE, false)
         );
     }
 
@@ -141,14 +139,13 @@ public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HALF, FACING, COFFEE);
+        builder.add(HALF, FACING);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(COFFEE, MobStatues.RANDOM.nextDouble() > 0.8);
+                .setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 }
