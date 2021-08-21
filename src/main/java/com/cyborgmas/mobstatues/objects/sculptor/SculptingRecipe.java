@@ -3,6 +3,7 @@ package com.cyborgmas.mobstatues.objects.sculptor;
 import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.registration.Registration;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -21,12 +22,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -125,8 +126,14 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
     public record Ingredients(List<String> pattern, Map<String, Ingredient> sculpture, Ingredient color, Ingredient texture, ItemStack result) {
         private static final Function<String, DataResult<String>> VERIFY_LENGTH_2 = s -> s.length() == 2 ? DataResult.success(s) :
                 DataResult.error("Key row length must be of 2!");
-        private static final Function<List<String>, DataResult<List<String>>> VERIFY_SIZE = l -> l.size() <= 4 && l.size() >= 1 ? DataResult.success(l) :
-                DataResult.error("Pattern must have between 1 and 4 rows of keys");
+        private static final Function<List<String>, DataResult<List<String>>> VERIFY_SIZE = l -> {
+            if (l.size() <= 4 && l.size() >= 1) {
+                List<String> temp = new ArrayList<>(l);
+                Collections.reverse(temp); //reverse so the first row is at the bottom in the json.
+                return DataResult.success(ImmutableList.copyOf(temp));
+            }
+            return DataResult.error("Pattern must have between 1 and 4 rows of keys");
+        };
         //only used once, but needed for typing reasons
         private static final Function<String, DataResult<String>> VERIFY_LENGTH_1 = s -> s.length() == 1 ? DataResult.success(s) :
                 DataResult.error("Key must be a single character!");
@@ -150,5 +157,77 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
                         ItemStack.CODEC.fieldOf("result").forGetter(Ingredients::result)
                 ).apply(inst, Ingredients::new)
         );
+
+        public static class Builder {
+            private final List<String> pattern = new ArrayList<>();
+            private final Map<String, Ingredient> keys = new HashMap<>();
+            private Ingredient texture = Ingredient.EMPTY;
+            private Ingredient color = Ingredient.EMPTY;
+            private final ItemStack result;
+
+            private Builder(ItemStack result) {
+                this.result = result;
+            }
+
+            public static Builder create(ItemStack result) {
+                Objects.requireNonNull(result);
+                return new Builder(result);
+            }
+
+            public Builder define(String key, Ingredient value) {
+                Objects.requireNonNull(value);
+                if (key.length() != 1)
+                    throw new IllegalStateException("Key " + key + " must be of length 1");
+                if (this.keys.put(key, value) != null)
+                    throw new IllegalArgumentException("Key " + key + " was already defined!");
+                return this;
+            }
+
+            public Builder row(String row) {
+                if (pattern.size() == 4)
+                    throw new IllegalArgumentException("Can't have a recipe with more than 4 rows!");
+                if (row.length() < 1 || row.length() > 2)
+                    throw new IllegalArgumentException("Row " + row + " must have 1 or 2 characters!");
+                if (pattern.size() > 0 && pattern.get(0).length() != row.length())
+                    throw new IllegalArgumentException("all rows must have the same length!");
+                if (row.isBlank())
+                    throw new IllegalArgumentException("Row must have 1 non whitespace character!");
+                this.pattern.add(row);
+                return this;
+            }
+
+            public Builder texture(Ingredient texture) {
+                Objects.requireNonNull(texture);
+                this.texture = texture;
+                return this;
+            }
+
+            public Builder color(Ingredient color) {
+                Objects.requireNonNull(color);
+                this.color = color;
+                return this;
+            }
+
+            public Ingredients build() {
+                this.pattern.forEach(s -> {
+                    String test = s.substring(0, 1);
+                    if (!test.isBlank() && !this.keys.containsKey(test))
+                        throw new IllegalStateException("Did not define key " + test);
+                    test = s.length() == 2 ? s.substring(1, 2) : " ";
+                    if (!test.isBlank() && !this.keys.containsKey(test))
+                        throw new IllegalStateException("Did not define key " + test);
+                });
+
+                this.keys.keySet().forEach(k ->
+                        this.pattern.stream().filter(s -> s.contains(k)).findAny()
+                                .orElseThrow(() -> new IllegalStateException("Key " + k + " is not used in the pattern.")));
+
+                List<String> pattern = this.pattern.stream()
+                        .map(s -> s.length() == 2 ? s : s.charAt(0) + " ")
+                        .collect(Collectors.toList());
+
+                return new Ingredients(pattern, this.keys, this.color, this.texture, this.result);
+            }
+        }
     }
 }
