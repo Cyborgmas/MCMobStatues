@@ -1,7 +1,8 @@
 package com.cyborgmas.mobstatues;
 
-import com.cyborgmas.mobstatues.client.SculptorWorkspaceScreen;
-import com.cyborgmas.mobstatues.client.StatueTileRenderer;
+import com.cyborgmas.mobstatues.client.sculptor.SculptorWorkspaceScreen;
+import com.cyborgmas.mobstatues.client.StatueBlockEntityRenderer;
+import com.cyborgmas.mobstatues.client.sculptor.RecipeBookHelper;
 import com.cyborgmas.mobstatues.registration.Registration;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -34,7 +35,9 @@ public class MobStatues {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> RecipeType.register(getId("sculpting").toString()));
+        event.enqueueWork(() -> {
+            RecipeType.register(getId("sculpting").toString());
+        });
     }
 
     public static ResourceLocation getId(String name) {
@@ -54,8 +57,9 @@ public class MobStatues {
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
             event.enqueueWork(() ->  {
-                BlockEntityRenderers.register(Registration.STATUE_BLOCK_ENTITY.get(), StatueTileRenderer::new);
+                BlockEntityRenderers.register(Registration.STATUE_BLOCK_ENTITY.get(), StatueBlockEntityRenderer::new);
                 MenuScreens.register(Registration.SCULPTOR_WORKSPACE_MENU_TYPE.get(), SculptorWorkspaceScreen::new);
+                RecipeBookHelper.init();
             });
         }
     }

@@ -13,6 +13,7 @@
       "id": "iron_golem"
     }
   },
+  "group": "iron_golem_statue",
   "pattern": [
     "TT",
     "TT",

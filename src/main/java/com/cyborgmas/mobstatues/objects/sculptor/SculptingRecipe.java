@@ -11,9 +11,11 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -39,6 +41,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
     private final int width;
     private final int height;
     private final List<Ingredient> items;
+    private final NonNullList<Ingredient> allIngredients;
 
     public SculptingRecipe(ResourceLocation id, Ingredients ingredients) {
         this.id = id;
@@ -53,6 +56,10 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
                 .map(s -> s.equals(" ") ? Ingredient.EMPTY : ingredients.sculpture.get(s))
                 .peek(i -> Objects.requireNonNull(i, "A key in sculpting pattern was not defined!"))
                 .toList();
+        this.allIngredients = NonNullList.create();
+        this.allIngredients.addAll(items);
+        this.allIngredients.add(this.ingredients.color);
+        this.allIngredients.add(this.ingredients.texture);
     }
 
     /**
@@ -105,7 +112,30 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
 
     @Override
     public boolean canCraftInDimensions(int width, int height) {
-        return false; //used for recipe book
+        return width <= 2 && height <= 4; //used for recipe book
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(Registration.SCULPTOR_WORKSPACE_BLOCK.get());
+    }
+
+    @Override
+    public String getGroup() {
+        return this.ingredients.group;
+    }
+
+    @Override
+    public boolean isIncomplete() {
+        return this.getIngredients().isEmpty() ||
+                this.getIngredients().stream()
+                        .filter((ingredient) -> !ingredient.isEmpty())
+                        .anyMatch((p_151273_) -> p_151273_.getItems().length == 0);
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return this.allIngredients;
     }
 
     @Override
@@ -123,7 +153,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
         return TYPE.get();
     }
 
-    public record Ingredients(List<String> pattern, Map<String, Ingredient> sculpture, Ingredient color, Ingredient texture, ItemStack result) {
+    public record Ingredients(String group, List<String> pattern, Map<String, Ingredient> sculpture, Ingredient color, Ingredient texture, ItemStack result) {
         private static final Function<String, DataResult<String>> VERIFY_LENGTH_2 = s -> s.length() == 2 ? DataResult.success(s) :
                 DataResult.error("Key row length must be of 2!");
         private static final Function<List<String>, DataResult<List<String>>> VERIFY_SIZE = l -> {
@@ -150,6 +180,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
 
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(inst ->
                 inst.group(
+                        Codec.STRING.fieldOf("group").forGetter(Ingredients::group),
                         Codec.STRING.flatXmap(VERIFY_LENGTH_2, VERIFY_LENGTH_2).listOf().flatXmap(VERIFY_SIZE, VERIFY_SIZE).fieldOf("pattern").forGetter(Ingredients::pattern),
                         Codec.unboundedMap(Codec.STRING.flatXmap(VERIFY_LENGTH_1, VERIFY_LENGTH_1), INGREDIENT_CODEC).fieldOf("key").forGetter(Ingredients::sculpture),
                         INGREDIENT_CODEC.optionalFieldOf("color", Ingredient.EMPTY).forGetter(Ingredients::color),
@@ -161,6 +192,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
         public static class Builder {
             private final List<String> pattern = new ArrayList<>();
             private final Map<String, Ingredient> keys = new HashMap<>();
+            private String group = "";
             private Ingredient texture = Ingredient.EMPTY;
             private Ingredient color = Ingredient.EMPTY;
             private final ItemStack result;
@@ -208,6 +240,12 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
                 return this;
             }
 
+            public Builder group(String group) {
+                Objects.requireNonNull(group);
+                this.group = group;
+                return this;
+            }
+
             public Ingredients build() {
                 this.pattern.forEach(s -> {
                     String test = s.substring(0, 1);
@@ -226,7 +264,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
                         .map(s -> s.length() == 2 ? s : s.charAt(0) + " ")
                         .collect(Collectors.toList());
 
-                return new Ingredients(pattern, this.keys, this.color, this.texture, this.result);
+                return new Ingredients(group, pattern, this.keys, this.color, this.texture, this.result);
             }
         }
     }

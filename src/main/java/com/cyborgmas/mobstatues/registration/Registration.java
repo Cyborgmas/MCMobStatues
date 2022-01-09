@@ -10,6 +10,7 @@ import com.cyborgmas.mobstatues.objects.sculptor.SculptingRecipeSerializer;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceBlock;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -36,6 +37,7 @@ public class Registration {
     public static DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
     public static DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+    public static final RecipeBookType SCULPTING = RecipeBookType.create("SCULPTING");
 
     public static void registerAll(IEventBus bus) {
         BLOCKS.register(bus);

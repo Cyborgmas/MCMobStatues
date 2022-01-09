@@ -9,8 +9,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
-public class StatueTileRenderer implements BlockEntityRenderer<StatueBlockEntity> {
-    public StatueTileRenderer(BlockEntityRendererProvider.Context context) {}
+public class StatueBlockEntityRenderer implements BlockEntityRenderer<StatueBlockEntity> {
+    public StatueBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
     public void render(StatueBlockEntity statueBE, float partialTicks, PoseStack stack, MultiBufferSource buffer, int light, int overlay) {

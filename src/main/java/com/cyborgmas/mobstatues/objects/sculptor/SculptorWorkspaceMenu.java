@@ -1,30 +1,28 @@
 package com.cyborgmas.mobstatues.objects.sculptor;
 
 import com.cyborgmas.mobstatues.registration.Registration;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.world.item.crafting.Recipe;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class SculptorWorkspaceMenu extends AbstractContainerMenu {
+public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceContainer> {
     private final SculptorWorkspaceContainer container = new SculptorWorkspaceContainer();
     /**
      * has to be separate to not loop when the result slot is changed.
      */
-    private final Container resultContainer = new ResultContainer();
+    private final ResultContainer resultContainer = new ResultContainer();
     private final Slot resultSlot;
     private final ContainerLevelAccess access;
+    private final Player player;
 
     /**
      * Client init
@@ -40,11 +38,14 @@ public class SculptorWorkspaceMenu extends AbstractContainerMenu {
         super(Registration.SCULPTOR_WORKSPACE_MENU_TYPE.get(), id);
         this.access = access;
         this.container.addListener(this::slotsChanged);
+        this.player = inv.player;
 
         /**
-         * Copied without achievements from {@link ResultSlot}
+         * Copied from {@link ResultSlot} but not limited to {@link CraftingContainer}
          */
         this.resultSlot = new Slot(this.resultContainer, 0, 144, 35) {
+            private int removeCount;
+
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
@@ -52,6 +53,7 @@ public class SculptorWorkspaceMenu extends AbstractContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack stack) {
+                this.checkTakeAchievements(stack);
                 Container craftingContainer = SculptorWorkspaceMenu.this.container;
                 NonNullList<ItemStack> remainders = player.level.getRecipeManager().getRemainingItemsFor(SculptingRecipe.TYPE.get(), SculptorWorkspaceMenu.this.container, player.level);
                 for (int i = 0; i < remainders.size(); ++i) {
@@ -73,17 +75,44 @@ public class SculptorWorkspaceMenu extends AbstractContainerMenu {
                     }
                 }
             }
+
+            @Override
+            public ItemStack remove(int amount) {
+                if (this.hasItem())
+                    this.removeCount += Math.min(amount, this.getItem().getCount());
+                return super.remove(amount);
+            }
+
+            @Override
+            public void onQuickCraft(ItemStack output, int amount) {
+                this.removeCount += amount;
+                this.checkTakeAchievements(output);
+            }
+
+            @Override
+            protected void onSwapCraft(int amount) {
+                this.removeCount = amount;
+            }
+
+            @Override
+            protected void checkTakeAchievements(ItemStack stack) {
+                if (this.removeCount > 0)
+                    stack.onCraftedBy(SculptorWorkspaceMenu.this.player.level, SculptorWorkspaceMenu.this.player, this.removeCount);
+                if (this.container instanceof RecipeHolder recipeHolder)
+                    recipeHolder.awardUsedRecipes(SculptorWorkspaceMenu.this.player);
+                this.removeCount = 0;
+            }
         };
         this.addSlot(this.resultSlot); //slot 0
 
         //slots 1 - 8
         for (int i = 0; i < 4; ++i) {
             for (int j = 0; j < 2; ++j)
-                this.addSlot(new Slot(this.container, j + i * 2, 15 + j * 18, 61 - i * 18));
+                this.addSlot(new Slot(this.container, j + i * 2, 30 + j * 18, 61 - i * 18));
         }
 
-        this.addSlot(new Slot(this.container, SculptorWorkspaceContainer.COLOR_IDX, 98, 17)); //slot 9
-        this.addSlot(new Slot(this.container, SculptorWorkspaceContainer.TEXTURE_IDX, 98, 53)); //slot 10
+        this.addSlot(new Slot(this.container, SculptorWorkspaceContainer.COLOR_IDX, 113, 17)); //slot 9
+        this.addSlot(new Slot(this.container, SculptorWorkspaceContainer.TEXTURE_IDX, 113, 53)); //slot 10
 
         //slots 11 to 37
         for(int i = 0; i < 3; ++i) {
@@ -120,7 +149,7 @@ public class SculptorWorkspaceMenu extends AbstractContainerMenu {
                         .getRecipeFor(SculptingRecipe.TYPE.get(), this.container, level);
                 if (recipe.isEmpty())
                     this.resultContainer.setItem(0, ItemStack.EMPTY);
-                else {
+                else if (player instanceof ServerPlayer sp && this.resultContainer.setRecipeUsed(level, sp, recipe.get())) {
                     ItemStack stack = recipe.get().assemble(this.container);
                     this.resultContainer.setItem(0, stack);
                 }
@@ -178,5 +207,58 @@ public class SculptorWorkspaceMenu extends AbstractContainerMenu {
             player.drop(item, false);
 
         return ret;
+    }
+
+    //RecipeBook stuff
+    @Override
+    public void fillCraftSlotsStackedContents(StackedContents contents) {
+        this.container.fillStackedContents(contents);
+    }
+
+    @Override
+    public void clearCraftingContent() {
+        this.container.clearContent();
+        this.resultContainer.clearContent();
+    }
+
+    @Override
+    public boolean recipeMatches(Recipe<? super SculptorWorkspaceContainer> recipe) {
+        return recipe.matches(this.container, this.player.level);
+    }
+
+    @Override
+    public int getResultSlotIndex() {
+        return RESULT_SLOT;
+    }
+
+    @Override
+    public int getGridWidth() {
+        return 2;
+    }
+
+    @Override
+    public int getGridHeight() {
+        return 4;
+    }
+
+    @Override
+    public int getSize() {
+        return 11;
+    }
+
+    @Override
+    public RecipeBookType getRecipeBookType() {
+        return Registration.SCULPTING;
+    }
+
+    @Override
+    public boolean shouldMoveToInventory(int slotIdx) {
+        return slotIdx != RESULT_SLOT;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void handlePlacement(boolean shiftDown, Recipe<?> recipe, ServerPlayer player) {
+        new ServerPlaceSculptingRecipe(this).recipeClicked(player, (Recipe<SculptorWorkspaceContainer>) recipe, shiftDown);
     }
 }

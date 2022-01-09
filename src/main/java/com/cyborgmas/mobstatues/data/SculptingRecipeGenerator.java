@@ -35,6 +35,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .define("#", Ingredient.of(COBBLESTONE))
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_GREEN))
+                .group("zombie_statue")
                 .build());
         make(c, "enderman_statue_sculpting", Ingredients.Builder.create(
                 tagged(t -> t.putString("id", "enderman")))
@@ -43,6 +44,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_PURPLE))
                 .texture(Ingredient.of(ENDER_PEARL))
+                .group("enderman_statue")
                 .build());
         make(c, "iron_golem_statue_sculpting", Ingredients.Builder.create(
                 tagged(t -> t.putString("id", "iron_golem")))
@@ -51,6 +53,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_WHITE))
                 .texture(Ingredient.of(IRON_BLOCK))
+                .group("iron_golem_statue")
                 .build());
     }
 
