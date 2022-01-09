@@ -17,14 +17,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoublePlantBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
@@ -32,12 +28,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
-
-import static net.minecraftforge.common.util.Constants.BlockFlags;
-import static net.minecraftforge.common.util.Constants.WorldEvents;
 
 @SuppressWarnings("deprecation")
 public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
@@ -111,8 +104,8 @@ public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
                 BlockPos below = pos.below();
                 BlockState belowState = level.getBlockState(below);
                 if (belowState.is(state.getBlock()) && belowState.getValue(HALF) == DoubleBlockHalf.LOWER) {
-                    level.setBlock(below, Blocks.AIR.defaultBlockState(), BlockFlags.DEFAULT | BlockFlags.NO_NEIGHBOR_DROPS);
-                    level.levelEvent(null, WorldEvents.BREAK_BLOCK_EFFECTS, below, Block.getId(belowState));
+                    level.setBlock(below, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+                    level.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, below, Block.getId(belowState));
                 }
             }
         }
@@ -122,7 +115,7 @@ public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack) {
-        level.setBlock(pos.above(), state.setValue(HALF, DoubleBlockHalf.UPPER), BlockFlags.DEFAULT);
+        level.setBlock(pos.above(), state.setValue(HALF, DoubleBlockHalf.UPPER), Block.UPDATE_ALL);
     }
 
     @Override

@@ -22,11 +22,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fmllegacy.DatagenModLoader;
+import net.minecraftforge.data.loading.DatagenModLoader;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class StatueBlockItem extends BlockItem {
         if (!toPlace.getFirst().remove(start)) // shouldn't happen?
             return false;
 
-        boolean ret = world.setBlock(start, state, Constants.BlockFlags.DEFAULT_AND_RERENDER);
+        boolean ret = world.setBlock(start, state, Block.UPDATE_ALL);
 
         BlockEntity te = world.getBlockEntity(context.getClickedPos());
         if (!(te instanceof StatueBlockEntity))
@@ -93,7 +93,7 @@ public class StatueBlockItem extends BlockItem {
         ((StatueBlockEntity) te).setup(nbt, toPlace, start, lookingDir.getOpposite());
 
         for (BlockPos p : toPlace.getFirst()) {
-            if (!world.setBlock(p, state.setValue(StatueBlock.START, false), Constants.BlockFlags.DEFAULT))
+            if (!world.setBlock(p, state.setValue(StatueBlock.START, false), Block.UPDATE_ALL))
                 ret = false;
             if (world.getBlockEntity(p) instanceof DelegatingBlockEntity)
                 ((DelegatingBlockEntity) world.getBlockEntity(p)).setDelegate(start);

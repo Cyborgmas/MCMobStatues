@@ -13,6 +13,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,7 +22,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -128,7 +128,7 @@ public class StatueBlockEntity extends BlockEntity {
             this.destroying = true;
             for (BlockPos pos : this.wholeStatue) {
                 if (world.getBlockState(pos).getBlock() == Registration.STATUE_BLOCK.get())
-                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.DEFAULT);
+                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             }
         }
     }
@@ -138,7 +138,7 @@ public class StatueBlockEntity extends BlockEntity {
             this.destroying = true;
             for (BlockPos pos : this.wholeStatue) {
                 if (!pos.equals(ignore) && world.getBlockState(pos).getBlock() == Registration.STATUE_BLOCK.get())
-                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.DEFAULT);
+                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             }
         }
     }
@@ -215,19 +215,19 @@ public class StatueBlockEntity extends BlockEntity {
     }
 
     private void bothSidedRead(CompoundTag nbt) {
-        setEntityData(nbt.contains(MobStatues.MOB_STATUE_KEY, Constants.NBT.TAG_COMPOUND) ?
+        setEntityData(nbt.contains(MobStatues.MOB_STATUE_KEY, Tag.TAG_COMPOUND) ?
                 nbt.getCompound(MobStatues.MOB_STATUE_KEY) : new CompoundTag());
 
-        if (nbt.contains(STATUE_TO_CENTER_KEY, Constants.NBT.TAG_LIST)) {
-            ListTag list = nbt.getList(STATUE_TO_CENTER_KEY, Constants.NBT.TAG_DOUBLE);
+        if (nbt.contains(STATUE_TO_CENTER_KEY, Tag.TAG_LIST)) {
+            ListTag list = nbt.getList(STATUE_TO_CENTER_KEY, Tag.TAG_DOUBLE);
             if (list.size() == 3)
                 this.toCenter = new Vec3(list.getDouble(0), list.getDouble(1), list.getDouble(2));
         }
 
-        if (nbt.contains(STATUE_DIRECTION_KEY, Constants.NBT.TAG_INT))
+        if (nbt.contains(STATUE_DIRECTION_KEY, Tag.TAG_INT))
             this.direction = Direction.from2DDataValue(nbt.getInt(STATUE_DIRECTION_KEY));
 
-        if (nbt.contains(STATUE_PARTS_KEY, Constants.NBT.TAG_LONG_ARRAY))
+        if (nbt.contains(STATUE_PARTS_KEY, Tag.TAG_LONG_ARRAY))
             this.wholeStatue = Arrays.stream(nbt.getLongArray(STATUE_PARTS_KEY))
                     .mapToObj(BlockPos::of)
                     .collect(Collectors.toList());

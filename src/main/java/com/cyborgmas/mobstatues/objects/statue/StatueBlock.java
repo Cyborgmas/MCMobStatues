@@ -86,7 +86,7 @@ public class StatueBlock extends BaseEntityBlock {
     }
 
     @Override //TODO PR to forge to be able to control the TE NBT that is added
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         return ItemStack.EMPTY;
     }
 

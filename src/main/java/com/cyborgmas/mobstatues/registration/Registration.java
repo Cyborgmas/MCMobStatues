@@ -20,12 +20,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fmllegacy.DatagenModLoader;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Consumer;
 
@@ -85,7 +85,7 @@ public class Registration {
             BLOCK_ENTITIES.register("delegating", () -> BlockEntityType.Builder.of(DelegatingBlockEntity::new, STATUE_BLOCK.get()).build(null));
 
     public static RegistryObject<MenuType<SculptorWorkspaceMenu>> SCULPTOR_WORKSPACE_MENU_TYPE =
-            MENUS.register("sculptor_workspace_menu", () -> IForgeContainerType.create(SculptorWorkspaceMenu::new));
+            MENUS.register("sculptor_workspace_menu", () -> IForgeMenuType.create(SculptorWorkspaceMenu::new));
 
     public static RegistryObject<RecipeSerializer<SculptingRecipe>> SCULPTING_RECIPE_SERIALIZER =
             RECIPE_SERIALIZERS.register("sculpting_recipe", SculptingRecipeSerializer::new);

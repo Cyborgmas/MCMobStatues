@@ -3,13 +3,13 @@ package com.cyborgmas.mobstatues.objects;
 import com.cyborgmas.mobstatues.registration.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
@@ -57,7 +57,7 @@ public class DelegatingBlockEntity extends BlockEntity {
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        if (nbt.contains(DELEGATED_POS_KEY, Constants.NBT.TAG_LONG))
+        if (nbt.contains(DELEGATED_POS_KEY, Tag.TAG_LONG))
             this.delegatedPos = BlockPos.of(nbt.getLong(DELEGATED_POS_KEY));
     }
 
@@ -66,7 +66,7 @@ public class DelegatingBlockEntity extends BlockEntity {
      */
     @Override
     public void handleUpdateTag(CompoundTag nbt) {
-        if (nbt.contains(DELEGATED_POS_KEY, Constants.NBT.TAG_LONG))
+        if (nbt.contains(DELEGATED_POS_KEY, Tag.TAG_LONG))
             this.delegatedPos = BlockPos.of(nbt.getLong(DELEGATED_POS_KEY));
     }
 
