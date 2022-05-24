@@ -5,10 +5,13 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -20,8 +23,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class StatueCreationHelper {
-    private static final List<EntityType<?>> DYNAMIC_SIZED_ENTITIES = Util.make(() -> ImmutableList.<EntityType<?>>builder()
+    private static final List<EntityType<?>> DYNAMIC_ENTITIES = Util.make(() -> ImmutableList.<EntityType<?>>builder()
             .add(EntityType.MAGMA_CUBE)
+            .add(EntityType.SHEEP)
+            .add(EntityType.HORSE)
+            .add(EntityType.AXOLOTL)
+            .add(EntityType.VILLAGER)
+            .add(EntityType.LLAMA)
             .build()
     );
 
@@ -67,11 +75,21 @@ public class StatueCreationHelper {
 
     private static Either<EntityType<?>, Entity> getEntityOrType(CompoundTag nbt, Level world) {
         EntityType<? extends Entity> type = EntityType.by(nbt).orElse(EntityType.PIG);
-        if (!DYNAMIC_SIZED_ENTITIES.contains(type)) //TODO proper data-driven check?
+        if (!DYNAMIC_ENTITIES.contains(type)) //TODO proper data-driven check?
             return Either.left(type);
 
         Entity e = createEntityAndRead(type, nbt, world);
+        handleEntity(e, nbt);
         return e == null ? Either.left(EntityType.PIG) : Either.right(e);
+    }
+
+    //Hard coded updates
+    private static void handleEntity(Entity entity, CompoundTag tag) {
+        // For llama the carpet is only synced from the server entity, but I only create client entities.
+        if (entity instanceof Llama llama) {
+            if (tag.contains("DecorColor"))
+                llama.setSwag(DyeColor.byId(tag.getInt("DecorColor")));
+        }
     }
 
     private static Entity createEntityAndRead(EntityType<?> type, CompoundTag nbt, Level world) {

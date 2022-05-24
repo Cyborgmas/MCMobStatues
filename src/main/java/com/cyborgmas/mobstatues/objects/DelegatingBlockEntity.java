@@ -45,10 +45,9 @@ public class DelegatingBlockEntity extends BlockEntity {
      * Server write
      */
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    public void saveAdditional(CompoundTag compound) {
         if (delegatedPos != null)
             compound.putLong(DELEGATED_POS_KEY, delegatedPos.asLong());
-        return super.save(compound);
     }
 
     /**
@@ -57,15 +56,6 @@ public class DelegatingBlockEntity extends BlockEntity {
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        if (nbt.contains(DELEGATED_POS_KEY, Tag.TAG_LONG))
-            this.delegatedPos = BlockPos.of(nbt.getLong(DELEGATED_POS_KEY));
-    }
-
-    /**
-     * Client read
-     */
-    @Override
-    public void handleUpdateTag(CompoundTag nbt) {
         if (nbt.contains(DELEGATED_POS_KEY, Tag.TAG_LONG))
             this.delegatedPos = BlockPos.of(nbt.getLong(DELEGATED_POS_KEY));
     }

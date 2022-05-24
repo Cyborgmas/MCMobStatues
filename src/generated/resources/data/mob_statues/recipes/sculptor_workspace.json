@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S",
+    " S",
+    "WW"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:dark_oak_log"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "result": {
+    "item": "mob_statues:sculptor_workspace"
+  }
+}

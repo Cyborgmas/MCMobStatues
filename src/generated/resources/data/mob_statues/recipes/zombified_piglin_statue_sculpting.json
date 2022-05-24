@@ -1,0 +1,26 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/pink"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "zombified_piglin"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "T ",
+    "# "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:basalt"
+    },
+    "T": {
+      "item": "minecraft:smooth_basalt"
+    }
+  }
+}

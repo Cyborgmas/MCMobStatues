@@ -1,0 +1,27 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/white"
+  },
+  "texture": {
+    "item": "minecraft:ender_pearl"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "Color": 0,
+      "id": "shulker"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "TT",
+    "TT"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:end_stone"
+    }
+  }
+}

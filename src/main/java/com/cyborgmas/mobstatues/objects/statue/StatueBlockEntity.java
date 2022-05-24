@@ -74,9 +74,6 @@ public class StatueBlockEntity extends BlockEntity {
     public boolean setup() {
         if (this.statue == null) {
             this.statue = StatueCreationHelper.getEntity(this.entityData, level,true);
-            if (this.statue == null)
-                return false;
-            this.statue.setYHeadRot(0);
         }
         return true;
     }
@@ -242,8 +239,8 @@ public class StatueBlockEntity extends BlockEntity {
      * Server write
      */
     @Override
-    public CompoundTag save(CompoundTag nbt) {
-        return this.bothSidedWrite(super.save(nbt));
+    public void saveAdditional(CompoundTag nbt) {
+        this.bothSidedWrite(nbt);
     }
 
     /**

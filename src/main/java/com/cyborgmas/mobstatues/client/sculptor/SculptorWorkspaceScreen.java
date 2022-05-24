@@ -90,13 +90,12 @@ public class SculptorWorkspaceScreen extends AbstractContainerScreen<SculptorWor
             this.setFocused(this.recipeBookComponent);
             return true;
         }
-        else
-            return this.widthTooNarrow && this.recipeBookComponent.isVisible() || super.mouseClicked(mouseX, mouseY, buttonId);
+        return this.widthTooNarrow && this.recipeBookComponent.isVisible() || super.mouseClicked(mouseX, mouseY, buttonId);
     }
 
     protected boolean hasClickedOutside(double mouseX, double mouseY, int x, int y, int buttonIdx) {
         boolean flag = mouseX < (double)x || mouseY < (double)y || mouseX >= (double)(x + this.imageWidth) || mouseY >= (double)(y + this.imageHeight);
-        return this.recipeBookComponent.hasClickedOutside(mouseX, mouseY, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, buttonIdx) && flag;
+        return flag && this.recipeBookComponent.hasClickedOutside(mouseX, mouseY, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, buttonIdx);
     }
 
     protected void slotClicked(Slot slot, int mouseX, int mouseY, ClickType clickType) {

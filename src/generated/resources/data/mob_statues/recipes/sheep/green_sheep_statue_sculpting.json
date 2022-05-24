@@ -1,0 +1,30 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/green"
+  },
+  "texture": {
+    "item": "minecraft:white_wool"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "Color": 13,
+      "id": "sheep"
+    }
+  },
+  "group": "sheep",
+  "pattern": [
+    "TT",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

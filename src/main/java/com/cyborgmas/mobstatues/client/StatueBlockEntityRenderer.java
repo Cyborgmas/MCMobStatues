@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.entity.LivingEntity;
 
 public class StatueBlockEntityRenderer implements BlockEntityRenderer<StatueBlockEntity> {
     public StatueBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
@@ -23,7 +24,8 @@ public class StatueBlockEntityRenderer implements BlockEntityRenderer<StatueBloc
         stack.mulPose(Vector3f.YP.rotationDegrees(statueBE.getYRotation()));
 
         try {
-            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(statueBE.getStatue()).render(statueBE.getStatue(), 0, partialTicks, stack, buffer, light);
+            //Render without passing partial ticks, to prevent animations.
+            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(statueBE.getStatue()).render(statueBE.getStatue(), 0, 0, stack, buffer, light);
         } catch (Exception e) {
             RenderingExceptionHandler.handle("statue", statueBE.getStatue().getType(), e);
         }

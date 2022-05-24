@@ -1,0 +1,26 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/pink"
+  },
+  "texture": {
+    "item": "minecraft:gold_ingot"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "piglin_brute"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "T ",
+    "T "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:smooth_basalt"
+    }
+  }
+}

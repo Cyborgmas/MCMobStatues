@@ -1,0 +1,28 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/pink"
+  },
+  "texture": {
+    "item": "minecraft:porkchop"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "pig"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "#T"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

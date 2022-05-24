@@ -7,6 +7,7 @@ import net.minecraft.Util;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.client.RecipeBookRegistry;
 
 public class RecipeBookHelper {
     public static final RecipeBookCategories SCULPTING_CRAFTING = RecipeBookCategories.create("SCULPTING_CRAFTING", Util.make(() -> {
@@ -17,8 +18,8 @@ public class RecipeBookHelper {
     public static final RecipeBookCategories SCULPTING_SEARCH = RecipeBookCategories.create("SCULPTING_SEARCH", new ItemStack(Items.COMPASS));
 
     public static void init() {
-        RecipeBookCategories.addCategoriesToType(Registration.SCULPTING, ImmutableList.of(SCULPTING_SEARCH, SCULPTING_CRAFTING));
-        RecipeBookCategories.addAggregateCategories(SCULPTING_SEARCH, ImmutableList.of(SCULPTING_CRAFTING));
-        RecipeBookCategories.addCategoriesFinder(SculptingRecipe.TYPE.get(), r -> SCULPTING_CRAFTING);
+        RecipeBookRegistry.addCategoriesToType(Registration.SCULPTING, ImmutableList.of(SCULPTING_SEARCH, SCULPTING_CRAFTING));
+        RecipeBookRegistry.addAggregateCategories(SCULPTING_SEARCH, ImmutableList.of(SCULPTING_CRAFTING));
+        RecipeBookRegistry.addCategoriesFinder(SculptingRecipe.TYPE.get(), r -> SCULPTING_CRAFTING);
     }
 }

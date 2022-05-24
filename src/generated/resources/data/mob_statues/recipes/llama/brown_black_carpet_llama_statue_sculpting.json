@@ -1,0 +1,32 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/black"
+  },
+  "texture": {
+    "tag": "forge:dyes/brown"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "Variant": 2,
+      "DecorColor": 15,
+      "id": "llama"
+    }
+  },
+  "group": "llama_brown",
+  "pattern": [
+    " T",
+    "TT",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

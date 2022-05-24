@@ -42,8 +42,6 @@ public class StatueBlock extends BaseEntityBlock {
             statue = (StatueBlockEntity) te;
         else if (te instanceof DelegatingBlockEntity)
             statue = ((DelegatingBlockEntity) te).getDelegate(Registration.STATUE_BLOCK_ENTITY.get(), reader);
-        else
-            MobStatues.LOGGER.debug("Tried getting statue at invalid pos {} found {} instead", pos, te);
 
         return statue;
     }

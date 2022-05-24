@@ -1,0 +1,26 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/cyan"
+  },
+  "texture": {
+    "item": "minecraft:feather"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "Variant": 3,
+      "id": "parrot"
+    }
+  },
+  "group": "parrot",
+  "pattern": [
+    "T "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

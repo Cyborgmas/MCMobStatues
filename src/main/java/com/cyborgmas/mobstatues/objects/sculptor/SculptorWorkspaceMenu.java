@@ -185,7 +185,7 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
             slot.onQuickCraft(item, ret);
         } else if (idx >= INVENTORY_START && idx < INVENTORY_STOP + 1) {
             if (!this.moveItemStackTo(item, CRAFTING_START, CRAFTING_STOP + 1, false)) {
-                if (idx < 37) {
+                if (idx < HOTBAR_START) {
                     if (!this.moveItemStackTo(item, HOTBAR_START, INVENTORY_STOP + 1, false))
                         return ItemStack.EMPTY;
                 } else if (!this.moveItemStackTo(item, INVENTORY_START, HOTBAR_START, false))

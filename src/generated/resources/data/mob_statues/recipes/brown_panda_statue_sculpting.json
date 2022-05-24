@@ -1,0 +1,32 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/brown"
+  },
+  "texture": {
+    "item": "minecraft:white_wool"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "HiddenGene": "brown",
+      "id": "panda",
+      "MainGene": "brown"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "TT",
+    "TT",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/yellow"
+  },
+  "texture": {
+    "item": "minecraft:sand"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "ocelot"
+    }
+  },
+  "group": "cat",
+  "pattern": [
+    "#T"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

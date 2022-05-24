@@ -1,0 +1,26 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "item": "minecraft:yellow_glazed_terracotta"
+  },
+  "texture": {
+    "tag": "minecraft:fishes"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "CatType": 5,
+      "id": "cat"
+    }
+  },
+  "group": "cat",
+  "pattern": [
+    "TT"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

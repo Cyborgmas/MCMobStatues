@@ -10,7 +10,7 @@
       "id": "zombie"
     }
   },
-  "group": "zombie_statue",
+  "group": "",
   "pattern": [
     "T ",
     "# "

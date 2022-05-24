@@ -1,0 +1,29 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/orange"
+  },
+  "texture": {
+    "tag": "forge:rods/blaze"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "blaze"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "T ",
+    "# "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:basalt"
+    },
+    "T": {
+      "item": "minecraft:smooth_basalt"
+    }
+  }
+}

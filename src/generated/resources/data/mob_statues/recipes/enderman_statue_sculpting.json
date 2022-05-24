@@ -13,7 +13,7 @@
       "id": "enderman"
     }
   },
-  "group": "enderman_statue",
+  "group": "",
   "pattern": [
     "T ",
     "T ",
@@ -21,10 +21,10 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:cobblestone"
+      "item": "minecraft:end_stone"
     },
     "T": {
-      "item": "minecraft:stone"
+      "item": "minecraft:end_stone_bricks"
     }
   }
 }

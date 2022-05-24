@@ -1,0 +1,28 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "texture": {
+    "item": "minecraft:rabbit_hide"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "Variant": 0,
+      "id": "llama"
+    }
+  },
+  "group": "llama_creamy",
+  "pattern": [
+    " T",
+    "TT",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

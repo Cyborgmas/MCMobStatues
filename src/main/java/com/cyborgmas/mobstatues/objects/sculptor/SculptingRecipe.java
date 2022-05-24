@@ -130,7 +130,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
         return this.getIngredients().isEmpty() ||
                 this.getIngredients().stream()
                         .filter((ingredient) -> !ingredient.isEmpty())
-                        .anyMatch((p_151273_) -> p_151273_.getItems().length == 0);
+                        .anyMatch(i -> i.getItems().length == 0);
     }
 
     @Override
@@ -215,6 +215,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
                 return this;
             }
 
+            //Rows are bottom to top.
             public Builder row(String row) {
                 if (pattern.size() == 4)
                     throw new IllegalArgumentException("Can't have a recipe with more than 4 rows!");

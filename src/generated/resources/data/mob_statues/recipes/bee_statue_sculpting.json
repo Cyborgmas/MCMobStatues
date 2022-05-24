@@ -1,0 +1,25 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/yellow"
+  },
+  "texture": {
+    "item": "minecraft:honeycomb"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "bee"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "T "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

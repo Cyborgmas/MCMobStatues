@@ -1,0 +1,26 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "item": "minecraft:sand"
+  },
+  "texture": {
+    "tag": "minecraft:fishes"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "CatType": 6,
+      "id": "cat"
+    }
+  },
+  "group": "cat",
+  "pattern": [
+    "TT"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

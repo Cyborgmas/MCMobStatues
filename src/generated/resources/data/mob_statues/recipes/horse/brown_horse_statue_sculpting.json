@@ -1,0 +1,31 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/brown"
+  },
+  "texture": {
+    "item": "minecraft:slime_ball"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "Variant": 3,
+      "id": "horse"
+    }
+  },
+  "group": "horse",
+  "pattern": [
+    " T",
+    "#T",
+    "#T"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

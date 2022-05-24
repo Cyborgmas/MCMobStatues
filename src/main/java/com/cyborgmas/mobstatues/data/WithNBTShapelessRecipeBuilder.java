@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -49,7 +50,7 @@ public class WithNBTShapelessRecipeBuilder {
         return new WithNBTShapelessRecipeBuilder(resultIn, countIn);
     }
 
-    public WithNBTShapelessRecipeBuilder addIngredient(Tag<Item> tagIn) {
+    public WithNBTShapelessRecipeBuilder addIngredient(TagKey<Item> tagIn) {
         return this.addIngredient(Ingredient.of(tagIn));
     }
 

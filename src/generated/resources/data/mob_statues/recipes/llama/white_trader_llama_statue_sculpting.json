@@ -1,0 +1,31 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "item": "minecraft:gold_nugget"
+  },
+  "texture": {
+    "tag": "forge:dyes/white"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "Variant": 1,
+      "id": "trader_llama"
+    }
+  },
+  "group": "llama_white",
+  "pattern": [
+    " T",
+    "TT",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

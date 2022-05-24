@@ -1,0 +1,25 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/black"
+  },
+  "texture": {
+    "item": "minecraft:leather"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "bat"
+    }
+  },
+  "group": "",
+  "pattern": [
+    "# "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    }
+  }
+}

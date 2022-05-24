@@ -1,0 +1,26 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "tag": "forge:dyes/gray"
+  },
+  "texture": {
+    "item": "minecraft:totem_of_undying"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "id": "evoker"
+    }
+  },
+  "group": "pillager",
+  "pattern": [
+    "T ",
+    "T "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}

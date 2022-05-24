@@ -1,0 +1,26 @@
+{
+  "type": "mob_statues:sculpting_recipe",
+  "color": {
+    "item": "minecraft:snowball"
+  },
+  "texture": {
+    "item": "minecraft:rabbit_hide"
+  },
+  "result": {
+    "id": "mob_statues:statue",
+    "Count": 1,
+    "tag": {
+      "RabbitType": 99,
+      "id": "rabbit"
+    }
+  },
+  "group": "rabbit",
+  "pattern": [
+    "T "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:stone"
+    }
+  }
+}
