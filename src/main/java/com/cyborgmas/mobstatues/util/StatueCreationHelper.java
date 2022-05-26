@@ -30,6 +30,11 @@ public class StatueCreationHelper {
             .add(EntityType.AXOLOTL)
             .add(EntityType.VILLAGER)
             .add(EntityType.LLAMA)
+            .add(EntityType.MOOSHROOM)
+            .add(EntityType.RABBIT)
+            .add(EntityType.PANDA)
+            .add(EntityType.PARROT)
+            .add(EntityType.SHULKER)
             .build()
     );
 
@@ -75,7 +80,7 @@ public class StatueCreationHelper {
 
     private static Either<EntityType<?>, Entity> getEntityOrType(CompoundTag nbt, Level world) {
         EntityType<? extends Entity> type = EntityType.by(nbt).orElse(EntityType.PIG);
-        if (!DYNAMIC_ENTITIES.contains(type)) //TODO proper data-driven check?
+        if (nbt.size() <= 1) // i.e. if the entity only has the id in the tag
             return Either.left(type);
 
         Entity e = createEntityAndRead(type, nbt, world);

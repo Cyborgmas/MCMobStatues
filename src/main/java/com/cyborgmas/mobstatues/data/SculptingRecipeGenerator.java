@@ -71,6 +71,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_RED))
                 .texture(Ingredient.of(RED_MUSHROOM))
+                .group("mooshroom")
                 .build());
         make(c,"brown_mooshroom_statue_sculpting", Ingredients.Builder.create(
                 tagged(t -> {
@@ -82,6 +83,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_BROWN))
                 .texture(Ingredient.of(BROWN_MUSHROOM))
+                .group("mooshroom")
                 .build());
 
         make(c,"pig_statue_sculpting", Ingredients.Builder.create(
@@ -332,18 +334,20 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_BLACK))
                 .texture(Ingredient.of(WHITE_WOOL))
+                .group("panda")
                 .build());
         make(c,"brown_panda_statue_sculpting", Ingredients.Builder.create(
-                        tagged(t -> {
-                            t.putString("id", "panda");
-                            t.putString("MainGene", "brown");
-                            t.putString("HiddenGene", "brown");
-                        }))
+                tagged(t -> {
+                    t.putString("id", "panda");
+                    t.putString("MainGene", "brown");
+                    t.putString("HiddenGene", "brown");
+                }))
                 .row("##").row("TT").row("TT")
                 .define("#", Ingredient.of(COBBLESTONE))
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_BROWN))
                 .texture(Ingredient.of(WHITE_WOOL))
+                .group("panda")
                 .build());
 
         for (TagKey<Item> key : PARROT_COLOR) {
@@ -638,6 +642,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .color(Ingredient.of(Tags.Items.DYES_PURPLE))
                 .build());
 
+        /* TODO these arent centered, also need to add open variants?
         for (DyeColor color : DyeColor.values()) {
             make(c,"shulker/" + color + "_shulker_statue_sculpting", Ingredients.Builder.create(
                     tagged(t -> {
@@ -650,6 +655,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                     .texture(Ingredient.of(ENDER_PEARL))
                     .build());
         }
+        */
     }
 
     private void make(Consumer<FinishedRecipe> c, String name, Ingredients ingredients) {

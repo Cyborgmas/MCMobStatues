@@ -77,6 +77,9 @@ public class StatueBlockItem extends BlockItem {
             return false;
         }
 
+        //TODO send this information via packet?
+        // If the player rotates too fast there will be a desync between the blocks placed as
+        // lookingDir will have changed.
         Pair<List<BlockPos>, Boolean> toPlace = getPlacements(start, world, size, lookingDir);
         if (toPlace == null)
             return false;
