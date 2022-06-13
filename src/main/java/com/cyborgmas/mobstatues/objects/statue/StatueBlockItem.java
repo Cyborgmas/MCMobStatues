@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -50,8 +50,8 @@ public class StatueBlockItem extends BlockItem {
 
         EntityType<?> entity = EntityType.by(stack.getOrCreateTag()).orElse(null);
 
-        TranslatableComponent entityName = entity != null ?
-                new TranslatableComponent(entity.getDescriptionId()) : MobStatues.translate("entity", "unknown");
+        MutableComponent entityName = entity != null ?
+                Component.translatable(entity.getDescriptionId()) : MobStatues.translate("entity", "unknown");
         tooltip.add(MobStatues.translate("tooltip", "statue", entityName));
     }
 

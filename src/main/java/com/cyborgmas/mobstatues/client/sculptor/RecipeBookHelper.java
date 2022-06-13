@@ -1,6 +1,5 @@
 package com.cyborgmas.mobstatues.client.sculptor;
 
-import com.cyborgmas.mobstatues.objects.sculptor.SculptingRecipe;
 import com.cyborgmas.mobstatues.registration.Registration;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.Util;
@@ -20,6 +19,6 @@ public class RecipeBookHelper {
     public static void init() {
         RecipeBookRegistry.addCategoriesToType(Registration.SCULPTING, ImmutableList.of(SCULPTING_SEARCH, SCULPTING_CRAFTING));
         RecipeBookRegistry.addAggregateCategories(SCULPTING_SEARCH, ImmutableList.of(SCULPTING_CRAFTING));
-        RecipeBookRegistry.addCategoriesFinder(SculptingRecipe.TYPE.get(), r -> SCULPTING_CRAFTING);
+        RecipeBookRegistry.addCategoriesFinder(Registration.SCULPTING_RECIPE_TYPE.get(), r -> SCULPTING_CRAFTING);
     }
 }

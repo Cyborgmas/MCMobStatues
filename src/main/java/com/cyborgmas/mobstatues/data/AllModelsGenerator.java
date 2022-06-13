@@ -11,7 +11,7 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import static com.cyborgmas.mobstatues.registration.Registration.SCULPTOR_WORKSPACE_BLOCK;
 import static com.cyborgmas.mobstatues.registration.Registration.STATUE_BLOCK;
-import static net.minecraftforge.client.model.generators.ModelBuilder.Perspective.*;
+import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType.*;
 
 public class AllModelsGenerator extends BlockStateProvider {
     public AllModelsGenerator(GatherDataEvent event) {
@@ -31,9 +31,9 @@ public class AllModelsGenerator extends BlockStateProvider {
                 .rotation(0, 180 ,0).end()
                 .transform(FIXED)
                 .rotation(0, 180, 0).scale(0.5f).end()
-                .transform(THIRDPERSON_RIGHT)
+                .transform(THIRD_PERSON_RIGHT_HAND)
                 .rotation(75, 315, 0).translation(0, 2.5f, 0).scale(0.375f).end()
-                .transform(FIRSTPERSON_RIGHT)
+                .transform(FIRST_PERSON_RIGHT_HAND)
                 .rotation(0, 315, 0).scale(0.4f).end()
                 .end();
 

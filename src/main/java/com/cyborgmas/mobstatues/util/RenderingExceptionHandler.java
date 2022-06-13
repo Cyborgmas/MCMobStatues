@@ -2,6 +2,7 @@ package com.cyborgmas.mobstatues.util;
 
 import com.cyborgmas.mobstatues.MobStatues;
 import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ public class RenderingExceptionHandler {
         Set<EntityType<?>> errors = CONTEXT_TO_ERRORS.computeIfAbsent(context, c -> new HashSet<>());
         if (!errors.contains(entity)) {
             errors.add(entity);
-            MobStatues.LOGGER.warn("Could not render entity of type {} in context [{}]", entity.getRegistryName(), context, e);
+            MobStatues.LOGGER.warn("Could not render entity of type {} in context [{}]", ForgeRegistries.ENTITIES.getKey(entity), context, e);
         }
     }
 }

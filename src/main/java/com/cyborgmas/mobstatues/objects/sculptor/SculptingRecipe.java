@@ -2,40 +2,25 @@ package com.cyborgmas.mobstatues.objects.sculptor;
 
 import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.registration.Registration;
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
-    @SuppressWarnings("unchecked")
-    public static final Supplier<RecipeType<SculptingRecipe>> TYPE = Suppliers.memoize(() -> (RecipeType<SculptingRecipe>) Registry.RECIPE_TYPE.get(MobStatues.getId("sculpting")));
     public final ResourceLocation id;
     public final Ingredients ingredients;
     private final int width;
@@ -150,7 +135,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
 
     @Override
     public RecipeType<?> getType() {
-        return TYPE.get();
+        return Registration.SCULPTING_RECIPE_TYPE.get();
     }
 
     public record Ingredients(String group, List<String> pattern, Map<String, Ingredient> sculpture, Ingredient color, Ingredient texture, ItemStack result) {

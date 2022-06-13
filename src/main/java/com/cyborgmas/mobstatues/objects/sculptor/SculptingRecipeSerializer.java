@@ -6,11 +6,10 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public class SculptingRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<SculptingRecipe> {
+public class SculptingRecipeSerializer implements RecipeSerializer<SculptingRecipe> {
     @Override
     public SculptingRecipe fromJson(ResourceLocation id, JsonObject json) {
         Ingredients ingredients = Ingredients.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, s->{});

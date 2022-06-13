@@ -55,7 +55,7 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
             public void onTake(Player player, ItemStack stack) {
                 this.checkTakeAchievements(stack);
                 Container craftingContainer = SculptorWorkspaceMenu.this.container;
-                NonNullList<ItemStack> remainders = player.level.getRecipeManager().getRemainingItemsFor(SculptingRecipe.TYPE.get(), SculptorWorkspaceMenu.this.container, player.level);
+                NonNullList<ItemStack> remainders = player.level.getRecipeManager().getRemainingItemsFor(Registration.SCULPTING_RECIPE_TYPE.get(), SculptorWorkspaceMenu.this.container, player.level);
                 for (int i = 0; i < remainders.size(); ++i) {
                     ItemStack toRemove = craftingContainer.getItem(i);
                     ItemStack toReplace = remainders.get(i);
@@ -146,7 +146,7 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
         this.access.execute((level, pos) -> {
             if (container == this.container) {
                 Optional<SculptingRecipe> recipe = level.getRecipeManager()
-                        .getRecipeFor(SculptingRecipe.TYPE.get(), this.container, level);
+                        .getRecipeFor(Registration.SCULPTING_RECIPE_TYPE.get(), this.container, level);
                 if (recipe.isEmpty())
                     this.resultContainer.setItem(0, ItemStack.EMPTY);
                 else if (player instanceof ServerPlayer sp && this.resultContainer.setRecipeUsed(level, sp, recipe.get())) {

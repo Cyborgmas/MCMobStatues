@@ -6,12 +6,10 @@ import com.cyborgmas.mobstatues.registration.Registration;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -25,7 +23,6 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.IItemRenderProperties;
 
 import java.util.Map;
-import java.util.Vector;
 import java.util.WeakHashMap;
 
 public class ItemRenderProperties {

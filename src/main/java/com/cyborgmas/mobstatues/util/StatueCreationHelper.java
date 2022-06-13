@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -104,7 +104,7 @@ public class StatueCreationHelper {
             try {
                 entity.load(nbt);
             } catch (Exception e) {
-                MobStatues.LOGGER.warn("Could not read nbt for entity of type {}, reading should never make assumptions about the tag.", entity.getType().getRegistryName(), e);
+                MobStatues.LOGGER.warn("Could not read nbt for entity of type {}, reading should never make assumptions about the tag.", ForgeRegistries.ENTITIES.getKey(entity.getType()), e);
             }
         }
         return entity;

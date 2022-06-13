@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.entity.LivingEntity;
 
 public class StatueBlockEntityRenderer implements BlockEntityRenderer<StatueBlockEntity> {
     public StatueBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}

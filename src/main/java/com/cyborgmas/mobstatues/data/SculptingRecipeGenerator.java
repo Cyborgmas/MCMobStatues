@@ -29,7 +29,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.NBTIngredient;
 

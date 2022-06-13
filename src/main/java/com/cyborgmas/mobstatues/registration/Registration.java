@@ -1,20 +1,23 @@
 package com.cyborgmas.mobstatues.registration;
 
+import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.client.ItemRenderProperties;
 import com.cyborgmas.mobstatues.objects.DelegatingBlockEntity;
-import com.cyborgmas.mobstatues.objects.statue.StatueBlock;
-import com.cyborgmas.mobstatues.objects.statue.StatueBlockEntity;
-import com.cyborgmas.mobstatues.objects.statue.StatueBlockItem;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptingRecipe;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptingRecipeSerializer;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceBlock;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceMenu;
+import com.cyborgmas.mobstatues.objects.statue.StatueBlock;
+import com.cyborgmas.mobstatues.objects.statue.StatueBlockEntity;
+import com.cyborgmas.mobstatues.objects.statue.StatueBlockItem;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -32,11 +35,12 @@ import java.util.function.Consumer;
 import static com.cyborgmas.mobstatues.MobStatues.MODID;
 
 public class Registration {
-    public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
-    public static DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-    public static DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+    private static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+    private static final DeferredRegister<RecipeType<?>> RECIPE_TYPE = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, MODID);
     public static final RecipeBookType SCULPTING = RecipeBookType.create("SCULPTING");
 
     public static void registerAll(IEventBus bus) {
@@ -45,6 +49,7 @@ public class Registration {
         BLOCK_ENTITIES.register(bus);
         MENUS.register(bus);
         RECIPE_SERIALIZERS.register(bus);
+        RECIPE_TYPE.register(bus);
     }
 
     public static RegistryObject<Block> STATUE_BLOCK = BLOCKS.register("statue_block", () ->
@@ -89,4 +94,10 @@ public class Registration {
 
     public static RegistryObject<RecipeSerializer<SculptingRecipe>> SCULPTING_RECIPE_SERIALIZER =
             RECIPE_SERIALIZERS.register("sculpting_recipe", SculptingRecipeSerializer::new);
+
+    public static RegistryObject<RecipeType<SculptingRecipe>> SCULPTING_RECIPE_TYPE = make("sculpting");
+
+    private static RegistryObject<RecipeType<SculptingRecipe>> make(String name) {
+        return RECIPE_TYPE.register(name, () -> RecipeType.simple(MobStatues.getId(name)));
+    }
 }

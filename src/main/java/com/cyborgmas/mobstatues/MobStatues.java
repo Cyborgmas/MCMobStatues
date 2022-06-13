@@ -1,12 +1,13 @@
 package com.cyborgmas.mobstatues;
 
-import com.cyborgmas.mobstatues.client.sculptor.SculptorWorkspaceScreen;
 import com.cyborgmas.mobstatues.client.StatueBlockEntityRenderer;
 import com.cyborgmas.mobstatues.client.sculptor.RecipeBookHelper;
+import com.cyborgmas.mobstatues.client.sculptor.SculptorWorkspaceScreen;
 import com.cyborgmas.mobstatues.registration.Registration;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,21 +32,14 @@ public class MobStatues {
     public MobStatues() {
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
         Registration.registerAll(modbus);
-        modbus.addListener(this::commonSetup);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            RecipeType.register(getId("sculpting").toString());
-        });
     }
 
     public static ResourceLocation getId(String name) {
         return new ResourceLocation(MODID, name);
     }
 
-    public static TranslatableComponent translate(String prefix, String suffix, Object... args) {
-        return new TranslatableComponent(prefix + "." + MODID + "." + suffix, args);
+    public static MutableComponent translate(String prefix, String suffix, Object... args) {
+        return Component.translatable(prefix + "." + MODID + "." + suffix, args);
     }
 
     public static String translateRaw(String prefix, String suffix) {

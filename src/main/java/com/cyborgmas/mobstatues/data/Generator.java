@@ -11,9 +11,9 @@ public class Generator {
     @SubscribeEvent
     public static void gatherDataEvent(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        generator.addProvider(new LangGen(generator));
-        generator.addProvider(new AllModelsGenerator(event));
-        generator.addProvider(new RecipesGenerator(event.getGenerator()));
-        generator.addProvider(new SculptingRecipeGenerator(event.getGenerator()));
+        generator.addProvider(true, new LangGen(generator));
+        generator.addProvider(true, new AllModelsGenerator(event));
+        generator.addProvider(true, new RecipesGenerator(event.getGenerator()));
+        generator.addProvider(true, new SculptingRecipeGenerator(event.getGenerator()));
     }
 }
