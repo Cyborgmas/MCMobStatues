@@ -4,6 +4,7 @@ import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -50,7 +51,7 @@ public class SculptorWorkspaceScreen extends AbstractContainerScreen<SculptorWor
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
         if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
             this.renderBg(stack, partialTicks, mouseX, mouseY);
@@ -65,20 +66,18 @@ public class SculptorWorkspaceScreen extends AbstractContainerScreen<SculptorWor
     }
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    protected void renderBg(GuiGraphics stack, float partialTicks, int mouseX, int mouseY) {
         int x = this.leftPos;
         int y = this.topPos;
-        this.blit(stack, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        stack.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     /**
      * Color gotten from super
      */
     @Override
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY) {
-        this.font.draw(stack, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+    protected void renderLabels(GuiGraphics stack, int mouseX, int mouseY) {
+        stack.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
     }
 
     protected boolean isHovering(int x, int y, int width, int height, double mouseX, double mouseY) {
@@ -106,12 +105,6 @@ public class SculptorWorkspaceScreen extends AbstractContainerScreen<SculptorWor
     @Override
     public void recipesUpdated() {
         this.recipeBookComponent.recipesUpdated();
-    }
-
-    @Override
-    public void removed() {
-        this.recipeBookComponent.removed();
-        super.removed();
     }
 
     @Override

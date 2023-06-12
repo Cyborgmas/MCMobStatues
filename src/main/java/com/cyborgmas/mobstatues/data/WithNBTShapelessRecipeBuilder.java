@@ -9,7 +9,9 @@ import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,23 +33,25 @@ import java.util.function.Consumer;
  */
 public class WithNBTShapelessRecipeBuilder {
     private static final Logger LOGGER = LogManager.getLogger();
+    private final RecipeCategory category;
     private final ItemStack result;
     private final int count;
     private final List<Ingredient> ingredients = Lists.newArrayList();
     private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     private String group;
 
-    public WithNBTShapelessRecipeBuilder(ItemStack resultIn, int countIn) {
+    public WithNBTShapelessRecipeBuilder(RecipeCategory category, ItemStack resultIn, int countIn) {
+        this.category = category;
         this.result = resultIn;
         this.count = countIn;
     }
 
-    public static WithNBTShapelessRecipeBuilder shapelessRecipe(ItemStack resultIn) {
-        return new WithNBTShapelessRecipeBuilder(resultIn, 1);
+    public static WithNBTShapelessRecipeBuilder shapelessRecipe(RecipeCategory category, ItemStack resultIn) {
+        return new WithNBTShapelessRecipeBuilder(category, resultIn, 1);
     }
 
-    public static WithNBTShapelessRecipeBuilder shapelessRecipe(ItemStack resultIn, int countIn) {
-        return new WithNBTShapelessRecipeBuilder(resultIn, countIn);
+    public static WithNBTShapelessRecipeBuilder shapelessRecipe(RecipeCategory category, ItemStack resultIn, int countIn) {
+        return new WithNBTShapelessRecipeBuilder(category, resultIn, countIn);
     }
 
     public WithNBTShapelessRecipeBuilder addIngredient(TagKey<Item> tagIn) {
@@ -87,11 +92,11 @@ public class WithNBTShapelessRecipeBuilder {
     }
 
     public void build(Consumer<FinishedRecipe> consumerIn) {
-        this.build(consumerIn, Registry.ITEM.getKey(this.result.getItem()));
+        this.build(consumerIn, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
     }
 
     public void build(Consumer<FinishedRecipe> consumerIn, String save) {
-        ResourceLocation resourcelocation = Registry.ITEM.getKey(this.result.getItem());
+        ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result.getItem());
         if ((new ResourceLocation(save)).equals(resourcelocation)) {
             throw new IllegalStateException("Shapeless Recipe " + save + " should remove its 'save' argument");
         } else {
@@ -102,7 +107,7 @@ public class WithNBTShapelessRecipeBuilder {
     public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
         this.validate(id);
         this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-        consumerIn.accept(new WithNBTShapelessRecipeBuilder.Result(id, this.result, this.count, this.group == null ? "" : this.group, this.ingredients, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + id.getPath())));
+        consumerIn.accept(new WithNBTShapelessRecipeBuilder.Result(id, this.result, this.count, this.group == null ? "" : this.group, this.ingredients, this.advancementBuilder, id.withPrefix("recipes/" + this.category.getFolderName() + "/")));
     }
 
     /**
@@ -146,7 +151,7 @@ public class WithNBTShapelessRecipeBuilder {
 
             json.add("ingredients", jsonarray);
             JsonObject jsonobject = new JsonObject();
-            jsonobject.addProperty("item", Registry.ITEM.getKey(this.result.getItem()).toString());
+            jsonobject.addProperty("item", ForgeRegistries.ITEMS.getKey(this.result.getItem()).toString());
             if (this.count > 1)
                 jsonobject.addProperty("count", this.count);
             if (this.result.getTag() != null)

@@ -25,8 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.data.loading.DatagenModLoader;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,9 +36,6 @@ public class StatueBlockItem extends BlockItem {
     public StatueBlockItem(Properties properties) {
         super(Registration.STATUE_BLOCK.get(), properties);
     }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
@@ -56,9 +52,8 @@ public class StatueBlockItem extends BlockItem {
     }
 
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        if (!DatagenModLoader.isRunningDataGen()) //crashes in datagen
-            consumer.accept(ItemRenderProperties.getStatueBlockItemRender());
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(ItemRenderProperties.getStatueBlockItemRender());
     }
 
     @Override

@@ -104,7 +104,7 @@ public class StatueCreationHelper {
             try {
                 entity.load(nbt);
             } catch (Exception e) {
-                MobStatues.LOGGER.warn("Could not read nbt for entity of type {}, reading should never make assumptions about the tag.", ForgeRegistries.ENTITIES.getKey(entity.getType()), e);
+                MobStatues.LOGGER.warn("Could not read nbt for entity of type {}, reading should never make assumptions about the tag.", ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()), e);
             }
         }
         return entity;

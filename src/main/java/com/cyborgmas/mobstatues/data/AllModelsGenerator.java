@@ -2,20 +2,21 @@ package com.cyborgmas.mobstatues.data;
 
 import com.cyborgmas.mobstatues.MobStatues;
 import com.cyborgmas.mobstatues.objects.sculptor.SculptorWorkspaceBlock;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
 
 import static com.cyborgmas.mobstatues.registration.Registration.SCULPTOR_WORKSPACE_BLOCK;
 import static com.cyborgmas.mobstatues.registration.Registration.STATUE_BLOCK;
-import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType.*;
+import static net.minecraft.world.item.ItemDisplayContext.*;
 
 public class AllModelsGenerator extends BlockStateProvider {
     public AllModelsGenerator(GatherDataEvent event) {
-        super(event.getGenerator(), MobStatues.MODID, event.getExistingFileHelper());
+        super(event.getGenerator().getPackOutput(), MobStatues.MODID, event.getExistingFileHelper());
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.cyborgmas.mobstatues.client;
 import com.cyborgmas.mobstatues.objects.statue.StatueBlockEntity;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -20,7 +20,7 @@ public class StatueBlockEntityRenderer implements BlockEntityRenderer<StatueBloc
         stack.pushPose();
 
         stack.translate(statueBE.getToCenter().x(), 0, statueBE.getToCenter().z());
-        stack.mulPose(Vector3f.YP.rotationDegrees(statueBE.getYRotation()));
+        stack.mulPose(Axis.YP.rotationDegrees(statueBE.getYRotation()));
 
         try {
             //Render without passing partial ticks, to prevent animations.

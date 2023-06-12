@@ -3,6 +3,7 @@ package com.cyborgmas.mobstatues.objects.sculptor;
 import com.cyborgmas.mobstatues.registration.Registration;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,6 +13,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
+import java.util.Collections;
 import java.util.Optional;
 
 public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceContainer> {
@@ -55,7 +57,7 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
             public void onTake(Player player, ItemStack stack) {
                 this.checkTakeAchievements(stack);
                 Container craftingContainer = SculptorWorkspaceMenu.this.container;
-                NonNullList<ItemStack> remainders = player.level.getRecipeManager().getRemainingItemsFor(Registration.SCULPTING_RECIPE_TYPE.get(), SculptorWorkspaceMenu.this.container, player.level);
+                NonNullList<ItemStack> remainders = player.level().getRecipeManager().getRemainingItemsFor(Registration.SCULPTING_RECIPE_TYPE.get(), SculptorWorkspaceMenu.this.container, player.level());
                 for (int i = 0; i < remainders.size(); ++i) {
                     ItemStack toRemove = craftingContainer.getItem(i);
                     ItemStack toReplace = remainders.get(i);
@@ -67,7 +69,7 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
                     if (!toReplace.isEmpty()) {
                         if (toRemove.isEmpty())
                             craftingContainer.setItem(i, toRemove);
-                        else if (ItemStack.isSame(toRemove, toReplace) && ItemStack.tagMatches(toRemove, toReplace)) {
+                        else if (ItemStack.matches(toRemove, toReplace) && ItemStack.isSameItemSameTags(toRemove, toReplace)) {
                             toReplace.grow(toRemove.getCount());
                             craftingContainer.setItem(i, toReplace);
                         } else if (!player.getInventory().add(toReplace))
@@ -97,9 +99,10 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
             @Override
             protected void checkTakeAchievements(ItemStack stack) {
                 if (this.removeCount > 0)
-                    stack.onCraftedBy(SculptorWorkspaceMenu.this.player.level, SculptorWorkspaceMenu.this.player, this.removeCount);
+                    stack.onCraftedBy(SculptorWorkspaceMenu.this.player.level(), SculptorWorkspaceMenu.this.player, this.removeCount);
                 if (this.container instanceof RecipeHolder recipeHolder)
-                    recipeHolder.awardUsedRecipes(SculptorWorkspaceMenu.this.player);
+                    //TODO to get this to work I think I need a custom recipe trigger?
+                    recipeHolder.awardUsedRecipes(SculptorWorkspaceMenu.this.player, Collections.emptyList());
                 this.removeCount = 0;
             }
         };
@@ -150,7 +153,9 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
                 if (recipe.isEmpty())
                     this.resultContainer.setItem(0, ItemStack.EMPTY);
                 else if (player instanceof ServerPlayer sp && this.resultContainer.setRecipeUsed(level, sp, recipe.get())) {
-                    ItemStack stack = recipe.get().assemble(this.container);
+                    if (sp.getServer() == null)
+                        throw new RuntimeException("Trying to craft an item without a server running??");
+                    ItemStack stack = recipe.get().assemble(this.container, sp.getServer().registryAccess());
                     this.resultContainer.setItem(0, stack);
                 }
             }
@@ -223,7 +228,7 @@ public class SculptorWorkspaceMenu extends RecipeBookMenu<SculptorWorkspaceConta
 
     @Override
     public boolean recipeMatches(Recipe<? super SculptorWorkspaceContainer> recipe) {
-        return recipe.matches(this.container, this.player.level);
+        return recipe.matches(this.container, this.player.level());
     }
 
     @Override

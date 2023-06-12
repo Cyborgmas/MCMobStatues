@@ -10,6 +10,7 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -86,12 +87,12 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
     }
 
     @Override
-    public ItemStack assemble(SculptorWorkspaceContainer container) {
-        return this.getResultItem().copy();
+    public ItemStack assemble(SculptorWorkspaceContainer container, RegistryAccess access) {
+        return this.getResultItem(access).copy();
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess access) {
         return this.ingredients.result();
     }
 
@@ -140,18 +141,18 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
 
     public record Ingredients(String group, List<String> pattern, Map<String, Ingredient> sculpture, Ingredient color, Ingredient texture, ItemStack result) {
         private static final Function<String, DataResult<String>> VERIFY_LENGTH_2 = s -> s.length() == 2 ? DataResult.success(s) :
-                DataResult.error("Key row length must be of 2!");
+                DataResult.error(() -> "Key row length must be of 2!");
         private static final Function<List<String>, DataResult<List<String>>> VERIFY_SIZE = l -> {
             if (l.size() <= 4 && l.size() >= 1) {
                 List<String> temp = new ArrayList<>(l);
                 Collections.reverse(temp); //reverse so the first row is at the bottom in the json.
                 return DataResult.success(ImmutableList.copyOf(temp));
             }
-            return DataResult.error("Pattern must have between 1 and 4 rows of keys");
+            return DataResult.error(() -> "Pattern must have between 1 and 4 rows of keys");
         };
         //only used once, but needed for typing reasons
         private static final Function<String, DataResult<String>> VERIFY_LENGTH_1 = s -> s.length() == 1 ? DataResult.success(s) :
-                DataResult.error("Key must be a single character!");
+                DataResult.error(() -> "Key must be a single character!");
 
         public static final Codec<Ingredient> INGREDIENT_CODEC = Codec.PASSTHROUGH.comapFlatMap(obj -> {
             JsonElement json = obj.convert(JsonOps.INSTANCE).getValue();
@@ -159,7 +160,7 @@ public class SculptingRecipe implements Recipe<SculptorWorkspaceContainer> {
                 return DataResult.success(Ingredient.fromJson(json));
             } catch (Exception e) {
                 MobStatues.LOGGER.warn("Failed to parse ingredient", e);
-                return DataResult.error("Failed to parse ingredient: " + e.getMessage());
+                return DataResult.error(() -> "Failed to parse ingredient: " + e.getMessage());
             }
         }, ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
 

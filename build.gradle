@@ -5,24 +5,27 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
-version = '0.2.0'
-group = 'com.cyborgmas.mobstatues' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'mobstatues'
-
+version = mod_version
+group = mod_group_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+base {
+    archivesName = mod_id
+}
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.19'
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
     accessTransformer = file('src/main/resources/META-INF/at.cfg')
     runs {
         client {
@@ -30,7 +33,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                mobstatues {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -41,7 +44,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                mobstatues {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -56,7 +59,7 @@ minecraft {
                     '--existing', file('src/main/resources/')
 
             mods {
-                mobstatues {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -77,7 +80,24 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.18'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+}
+
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+def replaceProperties = [
+        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+        forge_version: forge_version, forge_version_range: forge_version_range,
+        loader_version_range: loader_version_range,
+        mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+        mod_authors: mod_authors, mod_description: mod_description
+]
+processResources {
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
 }
 
 jar {

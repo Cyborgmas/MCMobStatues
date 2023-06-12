@@ -16,7 +16,7 @@ public class RenderingExceptionHandler {
         Set<EntityType<?>> errors = CONTEXT_TO_ERRORS.computeIfAbsent(context, c -> new HashSet<>());
         if (!errors.contains(entity)) {
             errors.add(entity);
-            MobStatues.LOGGER.warn("Could not render entity of type {} in context [{}]", ForgeRegistries.ENTITIES.getKey(entity), context, e);
+            MobStatues.LOGGER.warn("Could not render entity of type {} in context [{}]", ForgeRegistries.ENTITY_TYPES.getKey(entity), context, e);
         }
     }
 }

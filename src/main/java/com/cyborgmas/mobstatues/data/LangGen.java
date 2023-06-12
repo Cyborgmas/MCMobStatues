@@ -10,7 +10,7 @@ import static com.cyborgmas.mobstatues.registration.Registration.STATUE_BLOCK;
 
 public class LangGen extends LanguageProvider {
     public LangGen(DataGenerator gen) {
-        super(gen, MobStatues.MODID, "en_us");
+        super(gen.getPackOutput(), MobStatues.MODID, "en_us");
     }
 
     @Override

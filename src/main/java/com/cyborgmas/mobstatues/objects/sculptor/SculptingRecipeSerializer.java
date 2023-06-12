@@ -19,12 +19,12 @@ public class SculptingRecipeSerializer implements RecipeSerializer<SculptingReci
     @Nullable
     @Override
     public SculptingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-        Ingredients ingredients = buf.readWithCodec(Ingredients.CODEC);
+        Ingredients ingredients = buf.readJsonWithCodec(Ingredients.CODEC);
         return new SculptingRecipe(id, ingredients);
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, SculptingRecipe recipe) {
-        buffer.writeWithCodec(Ingredients.CODEC, recipe.ingredients);
+        buffer.writeJsonWithCodec(Ingredients.CODEC, recipe.ingredients);
     }
 }

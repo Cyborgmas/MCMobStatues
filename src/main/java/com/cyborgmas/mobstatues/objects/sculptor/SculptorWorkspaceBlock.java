@@ -58,7 +58,7 @@ public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide) {
-            NetworkHooks.openGui((ServerPlayer) player, new SimpleMenuProvider((id, inv, p) -> new SculptorWorkspaceMenu(id, inv, ContainerLevelAccess.create(level, pos)), CONTAINER_TITLE));
+            NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider((id, inv, p) -> new SculptorWorkspaceMenu(id, inv, ContainerLevelAccess.create(level, pos)), CONTAINER_TITLE));
             return InteractionResult.CONSUME;
         }
         return InteractionResult.SUCCESS;
@@ -123,11 +123,6 @@ public class SculptorWorkspaceBlock extends HorizontalDirectionalBlock {
         BlockPos belowPos = pos.below();
         BlockState below = reader.getBlockState(belowPos);
         return state.getValue(HALF) == DoubleBlockHalf.LOWER ? below.isFaceSturdy(reader, belowPos, Direction.UP) : below.is(this);
-    }
-
-    @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.cyborgmas.mobstatues;
 
 import com.cyborgmas.mobstatues.client.StatueBlockEntityRenderer;
-import com.cyborgmas.mobstatues.client.sculptor.RecipeBookHelper;
 import com.cyborgmas.mobstatues.client.sculptor.SculptorWorkspaceScreen;
 import com.cyborgmas.mobstatues.registration.Registration;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -9,13 +8,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +50,6 @@ public class MobStatues {
             event.enqueueWork(() ->  {
                 BlockEntityRenderers.register(Registration.STATUE_BLOCK_ENTITY.get(), StatueBlockEntityRenderer::new);
                 MenuScreens.register(Registration.SCULPTOR_WORKSPACE_MENU_TYPE.get(), SculptorWorkspaceScreen::new);
-                RecipeBookHelper.init();
             });
         }
     }

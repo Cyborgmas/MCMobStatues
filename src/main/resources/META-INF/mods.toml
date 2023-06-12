@@ -1,23 +1,21 @@
 modLoader="javafml" #mandatory
-loaderVersion="[39,)" #mandatory
-license="GNU GPL v3"
+loaderVersion="${loader_version_range}" #mandatory
+license="${mod_license}"
 [[mods]] #mandatory
-    modId="mob_statues" #mandatory
-    version="${file.jarVersion}" #mandatory
-    displayName="Mob Statues" #mandatory
-    authors="Cyborgmas" #optional
-    description='''
-    Adds mob statues.
-    '''
-[[dependencies.mob_statues]] #optional
+    modId="${mod_id}" #mandatory
+    version="${mod_version}" #mandatory
+    displayName="${mod_name}" #mandatory
+    authors="${mod_authors}" #optional
+    description='''${mod_description}'''
+[[dependencies.${mod_id}]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[41.0.18,)" #mandatory
+    versionRange="${forge_version_range}" #mandatory
     ordering="NONE"
     side="BOTH"
-[[dependencies.mob_statues]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19,1.20)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

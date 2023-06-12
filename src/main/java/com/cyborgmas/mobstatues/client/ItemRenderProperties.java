@@ -6,34 +6,34 @@ import com.cyborgmas.mobstatues.registration.Registration;
 import com.cyborgmas.mobstatues.util.RenderingExceptionHandler;
 import com.cyborgmas.mobstatues.util.StatueCreationHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public class ItemRenderProperties {
-    public static IItemRenderProperties getStatueBlockItemRender() {
-        return new IItemRenderProperties() {
+    public static IClientItemExtensions getStatueBlockItemRender() {
+        return new IClientItemExtensions() {
             private static final BlockEntityWithoutLevelRenderer RENDERER = new BlockEntityWithoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()) {
                 private final Map<ItemStack, Entity> dynamicModelMap = new WeakHashMap<>();
                 private final Map<ItemStack, Float> dynamicSizeMap = new WeakHashMap<>();
 
                 @Override
-                public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int light, int overlay) {
+                public void renderByItem(ItemStack stack, ItemDisplayContext ctx, PoseStack matrixStack, MultiBufferSource buffer, int light, int overlay) {
                     if (!stack.hasTag())
                         return;
 
@@ -73,17 +73,17 @@ public class ItemRenderProperties {
             };
 
             @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return RENDERER;
             }
         };
     }
 
-    public static IItemRenderProperties getSculptorWorkspaceBlockItemRenderer() {
-        return new IItemRenderProperties() {
+    public static IClientItemExtensions getSculptorWorkspaceBlockItemRenderer() {
+        return new IClientItemExtensions() {
             private static final BlockEntityWithoutLevelRenderer RENDERER = new BlockEntityWithoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()) {
                 @Override
-                public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
+                public void renderByItem(ItemStack stack, ItemDisplayContext ctx, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
                     ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
                     BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bottomModel = blockRenderer.getBlockModel(Registration.SCULPTOR_WORKSPACE_BLOCK.get().defaultBlockState());
@@ -91,14 +91,14 @@ public class ItemRenderProperties {
 
                     poseStack.pushPose();
 
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(30));
-                    poseStack.mulPose(Vector3f.XP.rotationDegrees(17f));
-                    poseStack.mulPose(Vector3f.ZP.rotationDegrees(12.5f));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(30));
+                    poseStack.mulPose(Axis.XP.rotationDegrees(17f));
+                    poseStack.mulPose(Axis.ZP.rotationDegrees(12.5f));
                     poseStack.translate(3 / 16f, 1 / 16f, 2 / 16f);
                     poseStack.scale(0.5f, 0.5f, 0.5f);
 
                     //TODO find the right values in game then datagen it to json.
-                    switch (transformType) {
+                    switch (ctx) {
                         case GUI -> {
                             poseStack.translate(0 , 2.5f / 16f, 0);
                             poseStack.scale(0.85f, 0.85f, 0.85f);
@@ -117,7 +117,7 @@ public class ItemRenderProperties {
             };
 
             @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return RENDERER;
             }
         };

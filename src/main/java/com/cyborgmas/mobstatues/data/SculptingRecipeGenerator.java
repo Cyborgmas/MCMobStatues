@@ -30,7 +30,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -40,11 +40,11 @@ import static net.minecraft.world.item.Items.*;
 
 public class SculptingRecipeGenerator extends RecipeProvider {
     public SculptingRecipeGenerator(DataGenerator generatorIn) {
-        super(generatorIn);
+        super(generatorIn.getPackOutput());
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> c) {
+    protected void buildRecipes(Consumer<FinishedRecipe> c) {
         //Overworld Peaceful
         make(c, "iron_golem_statue_sculpting", Ingredients.Builder.create(
                 tagged(t -> t.putString("id", "iron_golem")))
@@ -148,7 +148,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                     .define("T", Ingredient.of(STONE))
                     .color(e.getValue())
                     //TODO make ingredient that accepts all regen potions (strong, long & splash?)
-                    .texture(NBTIngredient.of(PotionUtils.setPotion(new ItemStack(POTION), Potions.REGENERATION)))
+                    .texture(StrictNBTIngredient.of(PotionUtils.setPotion(new ItemStack(POTION), Potions.REGENERATION)))
                     .group("axolotl")
                     .build());
         }
@@ -540,7 +540,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
                 .row("T").row("T")
                 .define("T", Ingredient.of(STONE))
                 .color(Ingredient.of(Tags.Items.DYES_GRAY))
-                .texture(NBTIngredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.INVISIBILITY)))
+                .texture(StrictNBTIngredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.INVISIBILITY)))
                 .group("pillager")
                 .build());
         make(c,"ravager_statue_sculpting", Ingredients.Builder.create(
@@ -706,7 +706,7 @@ public class SculptingRecipeGenerator extends RecipeProvider {
 
         map.put(Variant.CREAMY, Ingredient.of(RABBIT_HIDE));
         map.put(Variant.CHESTNUT, Ingredient.of(Tags.Items.INGOTS_COPPER));
-        map.put(Variant.DARKBROWN, Ingredient.of(DARK_OAK_TRAPDOOR));
+        map.put(Variant.DARK_BROWN, Ingredient.of(DARK_OAK_TRAPDOOR));
     });
 
     private static final List<String> LLAMA_VARIANTS_NAMES = ImmutableList.of("creamy", "white", "brown", "gray");
